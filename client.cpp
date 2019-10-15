@@ -21,7 +21,7 @@ void error(const char *msg) {
 }
 
 int main(int argc, char*argv[]) {
-
+char buffer[256];
 	/*
 	============================
 	SET UP CONNECTION
@@ -53,7 +53,8 @@ int main(int argc, char*argv[]) {
 	if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
 		error("ERROR connecting");
 	}
-
+	
+	write(sockfd, "Hello, world!\n", 13);
 	
 	close(sockfd);
 	return 0;
