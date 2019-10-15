@@ -9,6 +9,8 @@
 #include <iostream>
 #include <bitset>
 #include <math.h>
+#include "blowfish.h"
+#include <sstream>
 
 #define PORT 9554
 #define MAXVALUE 11500
@@ -54,8 +56,49 @@ char buffer[256];
 		error("ERROR connecting");
 	}
 	
-	write(sockfd, "Hello, world!\n", 13);
-	
+        //blowfish 
+
+        
+        size_t len = 0;
+              
+       
+        BLOWFISH bf("FEDCBA9876543210");
+        string stringOne = "hello there";
+        string stringTwo = "general kenobi";
+
+        string encryptedString = bf.Encrypt_CBC(stringTwo);
+        
+    
+        std::istringstream sstream(encryptedString);
+        
+
+
+        const void * a = encryptedString.c_str(); 
+
+
+
+
+
+        try {
+
+ 	size_t si = 0;
+	sstream >> si;
+        
+
+	write(sockfd, a, si);
+        n = read(sockfd,buffer,255);
+
+        
+        if (n < 0) error("ERROR reading from socket");
+
+        string decryptString = bf.Decrypt_CBC(buffer);
+
+        printf("Here is the message: %s\n",decryptString.c_str());
+
+        } catch(...){
+            
+        }
+
 	close(sockfd);
 	return 0;
 }

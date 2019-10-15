@@ -10,6 +10,7 @@
 #include <iostream>
 #include <bitset>
 #include <math.h>
+#include <sstream>
 
 #define PORT 9554
 #define MAXVALUE 11500
@@ -86,7 +87,14 @@ char buffer[256];
 	n = read(newsockfd,buffer,255);
         if (n < 0) error("ERROR reading from socket");
 	printf("Here is the message: %s\n",buffer);
-		
+	
+
+        //convert to size_t
+        std::istringstream sstream(buffer);
+        size_t size = 0;
+        sstream >> size;
+
+        write(sockfd, buffer, size); 	
 
 	close(newsockfd);
 	close(sockfd);
