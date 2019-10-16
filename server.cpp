@@ -83,7 +83,6 @@ char buffer[256];
 		error("ERROR on accept");
 	}
 	
-	//bzero(buffer,256);
 	n = read(newsockfd,buffer,255);
         if (n < 0) error("ERROR reading from socket");
 	printf("Here is the message: %s\n",buffer);
@@ -92,12 +91,7 @@ char buffer[256];
 	sstream >> si;
 
 	write(newsockfd, buffer, si);
-        //convert to size_t
-        //std::istringstream sstream(buffer);
-        //size_t size = 0;
-        //sstream >> size;
-
-        //write(sockfd, buffer, size); 	
+	
 
 	close(newsockfd);
 	close(sockfd);

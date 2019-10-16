@@ -75,34 +75,15 @@ char buffer[256];
 
         const void * a = encryptedString.c_str(); 
 
-		printf("One\n");
-
-
-
-        //try {
-			printf("two\n");
 			size_t si = 0;
 			sstream >> si;
 				
-			printf("three\n");
 			write(sockfd, a, si);
-			//bzero(buffer,256);
-				//n = read(sockfd,buffer,255);
 				
 				n = read(sockfd,buffer,255);
 				if (n < 0) error("ERROR reading from socket");
 				printf("Here is the message: %s\n",buffer);
 
-				printf("four\n");
-				//if (n < 0) error("ERROR reading from socket");
-
-				//string decryptString = bf.Decrypt_CBC(buffer);
-
-				//printf("Here is the message: %s\n",decryptString.c_str());
-
-        //} catch(...){
-            
-        //}
 
 	close(sockfd);
 	return 0;
