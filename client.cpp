@@ -22,6 +22,22 @@ void error(const char *msg) {
 	exit(0);
 }
 
+long f(long nonce) {
+    const long A = 48271;
+    const long M = 2147483647;
+    const long Q = M/A;
+    const long R = M%A;
+
+	static long state = 1;
+	long t = A * (state % Q) - R * (state / Q);
+	
+	if (t > 0)
+		state = t;
+	else
+		state = t + M;
+	return (long)(((double) state/M)* nonce);
+}
+
 int main(int argc, char*argv[]) {
 char buffer[256];
 	/*
@@ -56,9 +72,17 @@ char buffer[256];
 		error("ERROR connecting");
 	}
 	
-        //blowfish 
+        //Nonce 
+		long nonceR = 5647892341;
+		const int MAX = 20;
+		  long nonce = 5647892341;
+		  for  (int i = 1; i <= MAX; i++) {
 
+				long nonceR = f(nonce);
+		  } 
+		printf("Here is the number: %d\n",nonceR);
         
+		
         size_t len = 0;
               
        
