@@ -12,10 +12,23 @@
 #include "blowfish.h"
 #include <sstream>
 
+#include "cereal/archives/binary.hpp"
+
 #define PORT 9553
 #define MAXVALUE 11500
 
 using namespace std;
+
+struct MyClass
+{
+      int x, y, z;
+
+	  // Этот метод позволяет cereal узнать какие члены данных сериализовать:
+	  template<class Archive>
+	  void serialize(Archive & archive) {
+	  archive(x, y, z);  // для сериализации "вещей" нужно передать их в архив.
+	  }
+};
 
 void error(const char *msg) {
 	perror(msg);
@@ -83,14 +96,106 @@ char buffer[256];
 		printf("Here is the number: %d\n",nonceR);
         
 		
+		
+		
+		
+		
+		
+		
+			//Serialize variables
+		
+		/*
+		std::stringstream ss; 
+		
+		
+		printf("here1");
+		{
+		cereal::BinaryOutputArchive oarchive(ss);  // создание выходного архива.
+
+		MyClass m1 = { 15, 6, 2019 };
+		MyClass m2, m3;
+		m2.x = 16;
+		m2.y = 6;
+		m2.z = 2019;
+		m3 = { 17, 6, 2019 };
+		printf("here2");
+
+		oarchive(m1, m2, m3);  // запись данных в архив.
+		}  // архив выходит из скопа - гарантируется flush всего контента.
+
+			printf("here3");
+
+		
+	  // Архивы спроектированы по идиоме RAII и flush контента гарантируется
+	  // только при их деструкции. Некоторые архивы могут безопасно завершить
+	  // flush только при их деструкции. Нужно убедиться, особенно для выходной
+	  // сериализации, что архив автоматически уничтожается после завершения
+	  // работы с ним.
+
+	  {
+		  
+		printf("here4");
+
+		cereal::BinaryInputArchive iarchive(ss);  // создание входного архива.
+			printf("here5");
+
+		
+		iarchive(m1, m2, m3);  // чтение данных из архива.
+
+		std::cout << "m1 { x = " << m1.x << ", y = " << m1.y << ", z = " << m1.z << " }" << std::endl;
+		std::cout << "m2 { x = " << m2.x << ", y = " << m2.y << ", z = " << m2.z << " }" << std::endl;
+		std::cout << "m3 { x = " << m3.x << ", y = " << m3.y << ", z = " << m3.z << " }" << std::endl;
+
+		
+	  }
+		
+			printf("here6");
+		
+		
+		
+		*/
+		std::string stringOne = "hello there";
+		std::stringstream ss; 
+		
+        {
+		cereal::BinaryOutputArchive oarchive(ss);  // создание выходного архива.
+
+		
+		printf("here2");
+
+		oarchive(stringOne);  // запись данных в архив.
+		
+		}
+
+
+
+       {
+		  
+		printf("here4");
+
+		cereal::BinaryInputArchive iarchive(ss);  // создание входного архива.
+			printf("here5");
+
+		
+		iarchive(stringOne);  // чтение данных из архива.
+
+		std::cout << "string: " << stringOne << std::endl;
+		
+
+		
+	  }		
+		
+		
+		
+		
+		
+		
         size_t len = 0;
               
        
         BLOWFISH bf("FEDCBA9876543210");
-        string stringOne = "hello there";
-        string stringTwo = "general kenobi";
 
-        string encryptedString = bf.Encrypt_CBC(stringTwo);
+        string encryptedString = bf.Encrypt_CBC("hey");
         
     
         std::istringstream sstream(encryptedString);
@@ -101,6 +206,15 @@ char buffer[256];
 
 			size_t si = 0;
 			sstream >> si;
+			
+			
+			
+			
+			
+			
+			
+			
+			
 				
 			write(sockfd, a, si);
 				

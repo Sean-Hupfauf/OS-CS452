@@ -12,10 +12,27 @@
 #include <math.h>
 #include <sstream>
 
+#include "cereal/archives/binary.hpp"
+
 #define PORT 9553
 #define MAXVALUE 11500
 
 using namespace std;
+
+
+struct MyClass
+{
+      int x, y, z;
+
+	  // Этот метод позволяет cereal узнать какие члены данных сериализовать:
+	  template<class Archive>
+	  void serialize(Archive & archive) {
+	  archive(x, y, z);  // для сериализации "вещей" нужно передать их в архив.
+	  }
+};
+
+
+
 
 void error(const char *msg) {
 	perror(msg);
@@ -23,6 +40,15 @@ void error(const char *msg) {
 }
 
 int main (int argc, char *argv[]) {
+	
+	
+	
+	
+	
+	
+	
+	
+	
 char buffer[256];
 	/*
 	============================
@@ -77,6 +103,11 @@ char buffer[256];
 	for accepting new connections while the new socket file descriptor is used for
 	communcicating with the connected client.
 	*/
+	
+		
+	
+	
+	
 	newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
 
 	if (newsockfd < 0) {
@@ -86,14 +117,41 @@ char buffer[256];
 	n = read(newsockfd,buffer,255);
         if (n < 0) error("ERROR reading from socket");
 	printf("Here is the message: %s\n",buffer);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	std::istringstream sstream(buffer);
 	size_t si = 0;
 	sstream >> si;
 
 	write(newsockfd, buffer, si);
 	
+	
+	
+	
+	
+	
 
 	close(newsockfd);
 	close(sockfd);
+	
+	
+	
+	
+	
+
+	
+	
 	return 0;
+	
+	
+	
+	
 }

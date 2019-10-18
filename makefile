@@ -1,10 +1,10 @@
 all: client server
 
 client: client.cpp
-	g++ client.cpp -o client
+	g++ -std=c++11 client.cpp -o client
 
 server: server.cpp
-	g++ server.cpp -o server
+	g++ -std=c++11 server.cpp -o server
 
 clean:
 	rm client
