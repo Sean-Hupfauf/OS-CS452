@@ -21,12 +21,14 @@ using namespace std;
 
 struct MyClass
 {
-      int x, y, z;
+      long x;
+	  
+	  string testString;
 
 	  // Этот метод позволяет cereal узнать какие члены данных сериализовать:
 	  template<class Archive>
 	  void serialize(Archive & archive) {
-	  archive(x, y, z);  // для сериализации "вещей" нужно передать их в архив.
+	  archive(x, testString);  // для сериализации "вещей" нужно передать их в архив.
 	  }
 };
 
@@ -160,10 +162,11 @@ char buffer[256];
         {
 		cereal::BinaryOutputArchive oarchive(ss);  // создание выходного архива.
 
+		MyClass m1 = { nonceR, stringOne };
 		
-		printf("here2");
+	
 
-		oarchive(stringOne);  // запись данных в архив.
+		oarchive(m1);  // запись данных в архив.
 		
 		}
 
@@ -177,9 +180,9 @@ char buffer[256];
 			printf("here5");
 
 		
-		iarchive(stringOne);  // чтение данных из архива.
+		iarchive(m1);  // чтение данных из архива.
 
-		std::cout << "string: " << stringOne << std::endl;
+		std::cout << "string: " << m1.testString << "number: " << m1.nonceR << std::endl;
 		
 
 		
