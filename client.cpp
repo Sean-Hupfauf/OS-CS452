@@ -11,26 +11,14 @@
 #include <math.h>
 #include "blowfish.h"
 #include <sstream>
-
+#include "MyClass.hpp"
 #include "cereal/archives/binary.hpp"
 
-#define PORT 9553
+#define PORT 9551
 #define MAXVALUE 11500
 
+typedef MyClass MyData;
 using namespace std;
-
-struct MyClass
-{
-      long x;
-	  
-	  string testString;
-
-	  // Этот метод позволяет cereal узнать какие члены данных сериализовать:
-	  template<class Archive>
-	  void serialize(Archive & archive) {
-	  archive(x, testString);  // для сериализации "вещей" нужно передать их в архив.
-	  }
-};
 
 void error(const char *msg) {
 	perror(msg);
@@ -162,7 +150,7 @@ char buffer[256];
         {
 		cereal::BinaryOutputArchive oarchive(ss);  // создание выходного архива.
 
-		MyClass m1 = { nonceR, stringOne };
+		MyData m1 = {nonceR};
 		
 	
 
@@ -174,15 +162,15 @@ char buffer[256];
 
        {
 		  
-		printf("here4");
+		//printf("here4");
 
 		cereal::BinaryInputArchive iarchive(ss);  // создание входного архива.
-			printf("here5");
+			//printf("here5");
 
-		
+		MyData m1;
 		iarchive(m1);  // чтение данных из архива.
 
-		std::cout << "string: " << m1.testString << "number: " << m1.nonceR << std::endl;
+		std::cout << "number: " << m1.x << std::endl;
 		
 
 		

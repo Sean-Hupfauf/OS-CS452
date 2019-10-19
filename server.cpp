@@ -14,22 +14,11 @@
 
 #include "cereal/archives/binary.hpp"
 
-#define PORT 9553
+#define PORT 9551
 #define MAXVALUE 11500
 
 using namespace std;
 
-
-struct MyClass
-{
-      int x, y, z;
-
-	  // Этот метод позволяет cereal узнать какие члены данных сериализовать:
-	  template<class Archive>
-	  void serialize(Archive & archive) {
-	  archive(x, y, z);  // для сериализации "вещей" нужно передать их в архив.
-	  }
-};
 
 
 
