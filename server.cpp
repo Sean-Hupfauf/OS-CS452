@@ -94,24 +94,26 @@ char buffer[256];
 	}
 	
 	//-----------------------------------------------------
-	MyData m1;
-	n = read(newsockfd,(void*)&m1,255);
-        if (n < 0) error("ERROR reading from socket");
+	
 	//printf("Here is the message: %s\n",buffer);
 	
 	//-----------------------------------------------------
 	
-	std::stringstream ss(std::ios::binary); 
+	//std::stringstream ss(std::ios::binary); 
 	//std::stringstream ss(std::ios::binary | std::ios::out | std::ios::in); 
 	//Error here: Failed to read 8 bytes from input stream! Read 0 Aborted
 
 		{
-		  
+		std::stringstream ss(std::ios::binary); 
+	
+		n = read(newsockfd,(void*)&ss,255);
+        if (n < 0) error("ERROR reading from socket");
+		
 		cereal::BinaryInputArchive iarchive(ss);  
-
+		MyData m1;
 		iarchive(m1);  
 		std::cout << "number: " << m1.x << std::endl;
-		
+		 
 		}		
 		
     //-----------------------------------------------------

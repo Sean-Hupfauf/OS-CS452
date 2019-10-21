@@ -118,11 +118,11 @@ char buffer[256];
 
         //const void * a = encryptedString.c_str(); 
 
-			//size_t si = 0;
-			//sstream >> si;
+			size_t si = 0;
+			ss >> si;
 			
 	
-			write(sockfd, (const void*)&m1, sizeof(m1));
+			write(sockfd, (const void*)&ss, si);
 	//-----------------------------------------------------
 	
 	/* 			n = read(sockfd,buffer,255);
