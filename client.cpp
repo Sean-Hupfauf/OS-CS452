@@ -15,7 +15,7 @@
 #include "MyClass.hpp"
 #include "cereal/archives/binary.hpp"
 
-#define PORT 9434
+#define PORT 9435
 #define MAXVALUE 11500
 
 typedef MyClass MyData;
@@ -152,12 +152,14 @@ char buffer[256];
 		cereal::BinaryOutputArchive oarchive(ss);  // создание выходного архива.
 
 		MyData m1 = {nonceR};
+		printf("m1 = %ld \n", m1.x);
 		
 	
 
 		oarchive(m1);  // запись данных в архив.
 		
 		}
+		ss.close();
 		/*size_t sii = 0;
 		ss >> sii;
 			write(sockfd, ss, sii);

@@ -16,7 +16,7 @@
 
 #include "cereal/archives/binary.hpp"
 
-#define PORT 9434
+#define PORT 9435
 #define MAXVALUE 11500
 
 using namespace std;
@@ -114,28 +114,9 @@ char buffer[256];
 
     MyData m1;
     iarchive(m1); // Read the data from the archive
+	printf(" m1 = %ld \n", m1.x);
+	ss.close();
   }
-	/*
-	n = read(newsockfd,buffer,255);
-	printf("%s \n", buffer);
-	
-	
-		std::stringstream ss(buffer); 
-       {
-		  
-		//printf("here4");
-
-		cereal::BinaryInputArchive iarchive(ss);  // создание входного архива.
-			//printf("here5");
-
-		MyData m1;
-		iarchive(m1);  // чтение данных из архива.
-
-		printf("%ld \n", m1.x);
-		
-
-		
-	  }		*/
 	 
 	n = read(newsockfd, buffer, 255);
         if (n < 0) error("ERROR reading from socket");
