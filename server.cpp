@@ -11,16 +11,14 @@
 #include <bitset>
 #include <math.h>
 #include <sstream>
-
+#include "MyClass.hpp"
 #include "cereal/archives/binary.hpp"
 
-#define PORT 9551
+#define PORT 9550
 #define MAXVALUE 11500
 
+typedef MyClass MyData;
 using namespace std;
-
-
-
 
 
 void error(const char *msg) {
@@ -28,15 +26,9 @@ void error(const char *msg) {
 	exit(1);
 }
 
+//-----------------------------------------------------
+
 int main (int argc, char *argv[]) {
-	
-	
-	
-	
-	
-	
-	
-	
 	
 char buffer[256];
 	/*
@@ -93,9 +85,7 @@ char buffer[256];
 	communcicating with the connected client.
 	*/
 	
-		
-	
-	
+	//-----------------------------------------------------	
 	
 	newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
 
@@ -103,44 +93,37 @@ char buffer[256];
 		error("ERROR on accept");
 	}
 	
-	n = read(newsockfd,buffer,255);
+	//-----------------------------------------------------
+	MyData m1;
+	n = read(newsockfd,(void*)&m1,255);
         if (n < 0) error("ERROR reading from socket");
-	printf("Here is the message: %s\n",buffer);
+	//printf("Here is the message: %s\n",buffer);
 	
+	//-----------------------------------------------------
 	
+	std::stringstream ss(std::ios::binary | std::ios::out | std::ios::in); 
+		{
+		  
+		cereal::BinaryInputArchive iarchive(ss);  
+
+		iarchive(m1);  
+		std::cout << "number: " << m1.x << std::endl;
+		
+		}		
+		
+    //-----------------------------------------------------
 	
-	
-	
-	
-	
-	
-	
-	
-	std::istringstream sstream(buffer);
+	/* std::istringstream sstream(buffer);
 	size_t si = 0;
 	sstream >> si;
 
 	write(newsockfd, buffer, si);
+	 */
+	//-----------------------------------------------------
 	
-	
-	
-	
-	
-	
-
 	close(newsockfd);
 	close(sockfd);
-	
-	
-	
-	
-	
-
-	
-	
 	return 0;
-	
-	
-	
+		
 	
 }
