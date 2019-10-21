@@ -11,10 +11,11 @@
 #include <math.h>
 #include "blowfish.h"
 #include <sstream>
+#include <fstream>
 #include "MyClass.hpp"
 #include "cereal/archives/binary.hpp"
 
-#define PORT 9551
+#define PORT 9434
 #define MAXVALUE 11500
 
 typedef MyClass MyData;
@@ -81,9 +82,9 @@ char buffer[256];
 		  long nonce = 5647892341;
 		  for  (int i = 1; i <= MAX; i++) {
 
-				long nonceR = f(nonce);
+				nonceR = f(nonce);
 		  } 
-		printf("Here is the number: %d\n",nonceR);
+		printf("Here is the number: %ld\n",nonceR);
         
 		
 		
@@ -145,8 +146,8 @@ char buffer[256];
 		
 		*/
 		std::string stringOne = "hello there";
-		std::stringstream ss; 
-		
+		std::fstream ss; 
+		ss.open("file.txt", std::ios::binary | ios::out);
         {
 		cereal::BinaryOutputArchive oarchive(ss);  // создание выходного архива.
 
@@ -157,24 +158,11 @@ char buffer[256];
 		oarchive(m1);  // запись данных в архив.
 		
 		}
+		/*size_t sii = 0;
+		ss >> sii;
+			write(sockfd, ss, sii);
+*/
 
-
-
-       {
-		  
-		//printf("here4");
-
-		cereal::BinaryInputArchive iarchive(ss);  // создание входного архива.
-			//printf("here5");
-
-		MyData m1;
-		iarchive(m1);  // чтение данных из архива.
-
-		std::cout << "number: " << m1.x << std::endl;
-		
-
-		
-	  }		
 		
 		
 		

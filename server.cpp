@@ -11,13 +11,17 @@
 #include <bitset>
 #include <math.h>
 #include <sstream>
+#include <fstream>
+#include "MyClass.hpp"
 
 #include "cereal/archives/binary.hpp"
 
-#define PORT 9551
+#define PORT 9434
 #define MAXVALUE 11500
 
 using namespace std;
+
+typedef MyClass MyData;
 
 
 
@@ -103,9 +107,39 @@ char buffer[256];
 		error("ERROR on accept");
 	}
 	
+		std::fstream ss; 
+		ss.open("file.txt", std::ios::binary | ios::in);
+		 {
+    cereal::BinaryInputArchive iarchive(ss); // Create an input archive
+
+    MyData m1;
+    iarchive(m1); // Read the data from the archive
+  }
+	/*
 	n = read(newsockfd,buffer,255);
+	printf("%s \n", buffer);
+	
+	
+		std::stringstream ss(buffer); 
+       {
+		  
+		//printf("here4");
+
+		cereal::BinaryInputArchive iarchive(ss);  // создание входного архива.
+			//printf("here5");
+
+		MyData m1;
+		iarchive(m1);  // чтение данных из архива.
+
+		printf("%ld \n", m1.x);
+		
+
+		
+	  }		*/
+	 
+	n = read(newsockfd, buffer, 255);
         if (n < 0) error("ERROR reading from socket");
-	printf("Here is the message: %s\n",buffer);
+	printf("Here is the message: %s\n", buffer);
 	
 	
 	
