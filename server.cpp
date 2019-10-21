@@ -101,7 +101,10 @@ char buffer[256];
 	
 	//-----------------------------------------------------
 	
-	std::stringstream ss(std::ios::binary | std::ios::out | std::ios::in); 
+	std::stringstream ss(std::ios::binary); 
+	//std::stringstream ss(std::ios::binary | std::ios::out | std::ios::in); 
+	//Error here: Failed to read 8 bytes from input stream! Read 0 Aborted
+
 		{
 		  
 		cereal::BinaryInputArchive iarchive(ss);  
@@ -118,7 +121,8 @@ char buffer[256];
 	sstream >> si;
 
 	write(newsockfd, buffer, si);
-	 */
+	*/
+	
 	//-----------------------------------------------------
 	
 	close(newsockfd);

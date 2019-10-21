@@ -93,6 +93,7 @@ char buffer[256];
 	//-----------------------------------------------------
 	
 		std::string stringOne = "hello there";
+		//This is wrong -> std::stringstream ss(std::ios::binary); 
 		std::stringstream ss(std::ios::binary | std::ios::out | std::ios::in); 
 		MyData m1;
         {
