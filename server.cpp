@@ -13,8 +13,9 @@
 #include <sstream>
 #include "MyClass.hpp"
 #include "cereal/archives/binary.hpp"
+#include "cereal/archives/json.hpp"
 
-#define PORT 9550
+#define PORT 9551
 #define MAXVALUE 11500
 
 typedef MyClass MyData;
@@ -94,29 +95,54 @@ char buffer[256];
 	}
 	
 	//-----------------------------------------------------
-	MyData m1;
-	n = read(newsockfd,(void*)&m1,255);
+			char buf[256];
+			read(newsockfd, buf, 255);
+			std::cout << buf << std::endl;
+			std::stringstream ss;
+			string str(buf);
+			ss << str;
+			{
+			cereal::JSONInputArchive iarchive(ss);	
+			MyData mydata;
+			iarchive(mydata);
+			std::cout << mydata.x << std::endl << mydata.y << std::endl;
+			}
+			
+	
+	
+	//-----------------------------------------------------
+	/*MyData m1;
+	int siz;
+	n = read(newsockfd, &siz, 4);
+	//printf("%d \n", siz);
+	char buf[8];
+	n = read(newsockfd, buf,siz);
+	printf("%s \n", buf);
         if (n < 0) error("ERROR reading from socket");
 	//printf("Here is the message: %s\n",buffer);
 	
 	//-----------------------------------------------------
 	
-	std::stringstream ss(std::ios::binary); 
-	//std::stringstream ss(std::ios::binary | std::ios::out | std::ios::in); 
+	std::istringstream ss(std::ios::binary | std::ios::out | std::ios::in);
+	string inp(buf);
+	ss.str(inp);
+	std::cout << sizeof(ss) << std::endl;
+	//std::stringstream ss(buf, std::ios::binary | std::ios::out | std::ios::in); 
 	//Error here: Failed to read 8 bytes from input stream! Read 0 Aborted
-
+	
 		{
 		  
 		cereal::BinaryInputArchive iarchive(ss);  
+		//iarchive.loadBinary(&buf, sizeof(buf));
 
 		iarchive(m1);  
-		std::cout << "number: " << m1.x << std::endl;
+		//std::cout << "number: " << m1.x << std::endl;
 		
-		}		
+		}		*/
 		
     //-----------------------------------------------------
 	
-	/* std::istringstream sstream(buffer);
+	/*std::istringstream sstream(buffer);
 	size_t si = 0;
 	sstream >> si;
 

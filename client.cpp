@@ -13,8 +13,9 @@
 #include <sstream>
 #include "MyClass.hpp"
 #include "cereal/archives/binary.hpp"
+#include "cereal/archives/json.hpp"
 
-#define PORT 9550
+#define PORT 9551
 #define MAXVALUE 11500
 
 typedef MyClass MyData;
@@ -92,18 +93,43 @@ char buffer[256];
         
 	//-----------------------------------------------------
 	
+			std::stringstream ss; 
+		{
+			cereal::JSONOutputArchive oarchive(ss);
+			MyData mydata;
+			mydata.x = 1;	
+			mydata.y = 2;
+			oarchive(mydata);
+		}
+		const char* input = ss.str().c_str();
+			std::cout << input << std::endl;
+		size_t t = sizeof(input);
+		write(sockfd, input, 255);
+	
+	
+	//-----------------------------------------------------
+	
 		std::string stringOne = "hello there";
 		//This is wrong -> std::stringstream ss(std::ios::binary); 
+		/*const char* input;
+		int j;
+        {
 		std::stringstream ss(std::ios::binary | std::ios::out | std::ios::in); 
 		MyData m1;
-        {
 			
 		cereal::BinaryOutputArchive oarchive(ss);  
 
 		m1 = {nonceR};
 		oarchive(m1);  
 		
+		input = ss.str().c_str();
+		j = sizeof(input);
+		printf("%d \n", j);
+		size_t t = sizeof(j);
 		}
+		write(sockfd, &n,4 );
+		std::cout << input;
+		write(sockfd, &(input), 8);
 
 	//-----------------------------------------------------
 	
@@ -122,7 +148,7 @@ char buffer[256];
 			//sstream >> si;
 			
 	
-			write(sockfd, (const void*)&m1, sizeof(m1));
+			//write(sockfd, (const void*)&m1, sizeof(m1));
 	//-----------------------------------------------------
 	
 	/* 			n = read(sockfd,buffer,255);
