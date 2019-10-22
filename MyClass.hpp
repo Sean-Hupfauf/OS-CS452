@@ -3,13 +3,13 @@
 
 struct MyClass
 {
-  long x, y;
-  
+  int nonceOne;
+  std::string request;
 
   // Этот метод позволяет cereal узнать какие члены данных сериализовать:
   template<class Archive>
   void serialize(Archive & archive) {
-    archive(x, y);  // для сериализации "вещей" нужно передать их в архив.
+    archive(nonceOne, request);  // для сериализации "вещей" нужно передать их в архив.
   }
 
   // Функцию сериализации можно вынести из дефиниции класса или разделить

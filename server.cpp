@@ -105,7 +105,7 @@ char buffer[256];
 			cereal::JSONInputArchive iarchive(ss);	
 			MyData mydata;
 			iarchive(mydata);
-			std::cout << mydata.x << std::endl << mydata.y << std::endl;
+			std::cout << mydata.nonceOne << std::endl << mydata.request << std::endl;
 			}
 			
 	

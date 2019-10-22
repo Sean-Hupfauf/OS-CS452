@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
@@ -25,6 +26,22 @@ void error(const char *msg) {
 	perror(msg);
 	exit(0);
 }
+
+//-----------------------------------------------------
+
+int randomNumber() {
+	
+    int iSecret;
+
+    /* initialize random seed: */
+    srand (time(NULL));
+
+    /* generate secret number between 1 and 10: */
+    iSecret = rand() % 10 + 1;
+    
+	return iSecret;
+}
+
 
 //-----------------------------------------------------
 
@@ -84,12 +101,15 @@ char buffer[256];
         //Nonce 
 		long nonceR = 5647892341;
 		const int MAX = 20;
-		  long nonce = 5647892341;
+		  long zach = 5647892341;
 		  for  (int i = 1; i <= MAX; i++) {
 
-				long nonceR = f(nonce);
+				long nonceR = f(zach);
 		  } 
-		printf("Here is the number: %ld\n",nonceR);
+		  
+		int nonce = randomNumber();  
+		  
+		printf("Here is the number: %ld\n",nonce);
         
 	//-----------------------------------------------------
 	
@@ -97,8 +117,9 @@ char buffer[256];
 		{
 			cereal::JSONOutputArchive oarchive(ss);
 			MyData mydata;
-			mydata.x = 1;	
-			mydata.y = 2;
+			mydata.nonceOne = nonce;	
+			mydata.request = "Request: Ks for IDb";
+			
 			oarchive(mydata);
 		}
 		const char* input = ss.str().c_str();
