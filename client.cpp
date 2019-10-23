@@ -196,7 +196,42 @@ char buffer[256];
 			
 	//-----------------------------------------------------
 		
-		
 	close(sockfd);
+	//#define PORT 9538
+	int sockfb, m;
+	struct sockaddr_in serv_addr2;
+	struct hostent *server2;
+/* 
+	if (argc < 2) {
+		fprintf(stderr, "usage is %s hostname\n", argv[0]);
+		exit(0);
+	}
+*/
+	
+	sockfb = socket(AF_INET, SOCK_STREAM, 0);
+	if (sockfb < 0) error("ERROR opening socket");
+		server2 = gethostbyname(argv[2]);
+	 if (server2 == NULL) {
+		fprintf(stderr, "ERROR, no such host\n");
+		exit(0);
+	 } 
+
+	bzero((char *) &serv_addr2, sizeof(serv_addr2));
+	serv_addr2.sin_family = AF_INET;
+	bcopy((char *)server2->h_addr,
+		(char *)&serv_addr2.sin_addr.s_addr,
+		server2->h_length);
+	serv_addr2.sin_port = htons(9538);
+	 
+	if (connect(sockfb, (struct sockaddr *) &serv_addr2, sizeof(serv_addr2)) < 0) {
+		error("ERROR connecting");
+	}
+	 
+	
+	write(sockfb, "Hello, world!\n", 13);
+	
+	
+	close(sockfb);
+	
 	return 0;
 }
