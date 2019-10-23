@@ -11,15 +11,22 @@
 #include <bitset>
 #include <math.h>
 #include "blowfish.h"
+#include "blowfisher.hpp"
 #include <sstream>
 #include "MyClass.hpp"
+#include "PartTwo.hpp"
+#include "PartTwoB.hpp"
 #include "cereal/archives/binary.hpp"
 #include "cereal/archives/json.hpp"
 
-#define PORT 9551
+#define PORT 9537
 #define MAXVALUE 11500
 
 typedef MyClass MyData;
+typedef PartTwo MyTwo;
+typedef blowfisher MyBlow;
+typedef PartTwoB MyTwoB;
+
 using namespace std;
 
 void error(const char *msg) {
@@ -109,7 +116,6 @@ char buffer[256];
 		  
 		int nonce = randomNumber();  
 		  
-		printf("Here is the number: %ld\n",nonce);
         
 	//-----------------------------------------------------
 	
@@ -122,61 +128,74 @@ char buffer[256];
 			
 			oarchive(mydata);
 		}
+		
 		const char* input = ss.str().c_str();
-			std::cout << input << std::endl;
 		size_t t = sizeof(input);
 		write(sockfd, input, 255);
 	
 	
 	//-----------------------------------------------------
-	
-		std::string stringOne = "hello there";
-		//This is wrong -> std::stringstream ss(std::ios::binary); 
-		/*const char* input;
-		int j;
-        {
-		std::stringstream ss(std::ios::binary | std::ios::out | std::ios::in); 
-		MyData m1;
-			
-		cereal::BinaryOutputArchive oarchive(ss);  
+	std::string keyers;
+	std::string keyers2;
+	BLOWFISH bf("FEDCBA9876543210");
 
-		m1 = {nonceR};
-		oarchive(m1);  
+			std::stringstream sr; 
+			char buf[1000];
+			
+			read(sockfd, buf, 1000);
+			
+			string str(buf);
+			
+			sr << str;
+			
+			{
+			cereal::JSONInputArchive iarchive(sr);	
+			MyBlow myblow;
+			iarchive(myblow);
+			keyers=myblow.encryptedString;
+			} 
+			
+			//-----------------------------------------------------
+			//Got the big chunk in part, deserilize and get the encryptedString
+			//with everything in it.
+			
+			std::string varTwo = bf.Decrypt_CBC(keyers);
+			
+			std::stringstream st;
+			st << varTwo;
+			
+			{
+			cereal::JSONInputArchive iarchive(st);	
+			MyTwo mytwo;
+			iarchive(mytwo);
+			keyers2=mytwo.encryptedString;
+			} 
+			
+			//-----------------------------------------------------
+			//Decypted and exposed the Ks, Request, Nonce, and encryptedString for
+			//B's encrypted data containing Ks and IDa
+			
+			std::string varThree = bf.Decrypt_CBC(keyers2);
+			
+			std::stringstream sq;
+			sq << varThree;
+			
+			//-----------------------------------------------------
+			//Decypted and exposed B's encrypted data containing Ks and IDa
+			//Now it gets deserilized below
+			
+			{
+				
+			cereal::JSONInputArchive iarchive(sq);	
+			MyTwoB mytwoB;
+			iarchive(mytwoB);
+			std::cout << mytwoB.IDa << std::endl << mytwoB.sessionKey << std::endl;;
+			
+			} 
+			
+	//-----------------------------------------------------
 		
-		input = ss.str().c_str();
-		j = sizeof(input);
-		printf("%d \n", j);
-		size_t t = sizeof(j);
-		}
-		write(sockfd, &n,4 );
-		std::cout << input;
-		write(sockfd, &(input), 8);
-
-	//-----------------------------------------------------
-	
-		size_t len = 0;
-   
-        //BLOWFISH bf("FEDCBA9876543210");
-
-        //string encryptedString = bf.Encrypt_CBC("hey");
-        
-        //std::istringstream sstream(m1);
-        
-
-        //const void * a = encryptedString.c_str(); 
-
-			//size_t si = 0;
-			//sstream >> si;
-			
-	
-			//write(sockfd, (const void*)&m1, sizeof(m1));
-	//-----------------------------------------------------
-	
-	/* 			n = read(sockfd,buffer,255);
-				if (n < 0) error("ERROR reading from socket");
-				printf("Here is the message: %s\n",buffer);
-    */
-
+		
 	close(sockfd);
 	return 0;
 }

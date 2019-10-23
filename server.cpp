@@ -12,13 +12,21 @@
 #include <math.h>
 #include <sstream>
 #include "MyClass.hpp"
+#include "PartTwo.hpp"
+#include "PartTwoB.hpp"
+#include "blowfisher.hpp"
+#include "blowfish.h"
 #include "cereal/archives/binary.hpp"
 #include "cereal/archives/json.hpp"
 
-#define PORT 9551
+#define PORT 9537
 #define MAXVALUE 11500
 
 typedef MyClass MyData;
+typedef PartTwo MyTwo;
+typedef PartTwoB MyTwoB;
+typedef blowfisher MyBlow;
+
 using namespace std;
 
 
@@ -94,7 +102,12 @@ char buffer[256];
 		error("ERROR on accept");
 	}
 	
+	int nonceOne;
+	std::string request;
+	
 	//-----------------------------------------------------
+	//Reads in the request and nonce, copies both.
+	
 			char buf[256];
 			read(newsockfd, buf, 255);
 			std::cout << buf << std::endl;
@@ -105,51 +118,75 @@ char buffer[256];
 			cereal::JSONInputArchive iarchive(ss);	
 			MyData mydata;
 			iarchive(mydata);
-			std::cout << mydata.nonceOne << std::endl << mydata.request << std::endl;
+
+			nonceOne = mydata.nonceOne;
+			request = mydata.request;
 			}
 			
 	
+	std::string inputM;
+	std::string inputBefore;
 	
 	//-----------------------------------------------------
-	/*MyData m1;
-	int siz;
-	n = read(newsockfd, &siz, 4);
-	//printf("%d \n", siz);
-	char buf[8];
-	n = read(newsockfd, buf,siz);
-	printf("%s \n", buf);
-        if (n < 0) error("ERROR reading from socket");
-	//printf("Here is the message: %s\n",buffer);
+	//First it creates the payload going to b, seralizes it, and encrypts it
 	
-	//-----------------------------------------------------
-	
-	std::istringstream ss(std::ios::binary | std::ios::out | std::ios::in);
-	string inp(buf);
-	ss.str(inp);
-	std::cout << sizeof(ss) << std::endl;
-	//std::stringstream ss(buf, std::ios::binary | std::ios::out | std::ios::in); 
-	//Error here: Failed to read 8 bytes from input stream! Read 0 Aborted
-	
+	std::stringstream sf;
+
 		{
-		  
-		cereal::BinaryInputArchive iarchive(ss);  
-		//iarchive.loadBinary(&buf, sizeof(buf));
-
-		iarchive(m1);  
-		//std::cout << "number: " << m1.x << std::endl;
-		
-		}		*/
-		
-    //-----------------------------------------------------
+			cereal::JSONOutputArchive oarchive(sf);
+			MyTwoB mytwoB;
+			
+			mytwoB.IDa = 1;
+			mytwoB.sessionKey = "FEDCBA9876543210";
+			
+			oarchive(mytwoB);
+		}
+		const char* inputB = sf.str().c_str();
+		BLOWFISH bf("FEDCBA9876543210");
+		inputBefore = bf.Encrypt_CBC(inputB);
 	
-	/*std::istringstream sstream(buffer);
-	size_t si = 0;
-	sstream >> si;
+	
+	//===============================================
+	//Then it combines the encrypted string b payload with the stuff going with it in part two
+	//Serializes it and then encrypts it again.
+	
+	
+	std::stringstream st;
 
-	write(newsockfd, buffer, si);
-	*/
+		{
+			cereal::JSONOutputArchive oarchive(st);
+			MyTwo mytwo;
+			
+			mytwo.nonceOne = nonceOne;	
+			mytwo.request = request;
+			mytwo.encryptedString = inputBefore;
+			mytwo.sessionKey = "FEDCBA9876543210";
+			
+			oarchive(mytwo);
+		}
+		const char* input = st.str().c_str();
+		inputM = bf.Encrypt_CBC(input);
+	
 	
 	//-----------------------------------------------------
+	//Then it seralizes the complete encrypted payload that is going to A and writes it to A.
+	
+	std::stringstream sr;
+		{
+			cereal::JSONOutputArchive oarchive(sr);
+			MyBlow myblow;
+			myblow.encryptedString = inputM;	
+			
+			oarchive(myblow);
+		}
+		
+		std::string nextx = sr.str();
+		
+		size_t t = sizeof(nextx);
+		write(newsockfd, nextx.c_str(), 1000);
+		
+	//-----------------------------------------------------
+	
 	
 	close(newsockfd);
 	close(sockfd);
