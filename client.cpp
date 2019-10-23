@@ -105,7 +105,7 @@ char buffer[256];
 	}
 	//-----------------------------------------------------
 	
-        //Nonce 
+        //Nonce f function 
 		long nonceR = 5647892341;
 		const int MAX = 20;
 		  long zach = 5647892341;
@@ -164,7 +164,7 @@ char buffer[256];
 			
 			std::stringstream st;
 			st << varTwo;
-			
+			std::cout << varTwo << std::endl;
 			{
 			cereal::JSONInputArchive iarchive(st);	
 			MyTwo mytwo;
@@ -172,27 +172,7 @@ char buffer[256];
 			keyers2=mytwo.encryptedString;
 			} 
 			
-			//-----------------------------------------------------
-			//Decypted and exposed the Ks, Request, Nonce, and encryptedString for
-			//B's encrypted data containing Ks and IDa
 			
-			std::string varThree = b.Decrypt_CBC(keyers2);
-			
-			std::stringstream sq;
-			sq << varThree;
-			
-			//-----------------------------------------------------
-			//Decypted and exposed B's encrypted data containing Ks and IDa
-			//Now it gets deserilized below
-			
-			{
-				
-			cereal::JSONInputArchive iarchive(sq);	
-			MyTwoB mytwoB;
-			iarchive(mytwoB);
-			std::cout << mytwoB.IDa << std::endl << mytwoB.sessionKey << std::endl;;
-			
-			} 
 			
 	//-----------------------------------------------------
 		
@@ -227,11 +207,101 @@ char buffer[256];
 		error("ERROR connecting");
 	}
 	 
+	 
+	//-----------------------------------------------------
+	//Then it seralizes the complete encrypted payload that is going to B and writes it to B.
+	std::string newkey;
+	std::stringstream rs;
+		{
+			cereal::JSONOutputArchive oarchive(rs);
+			MyBlow myblow;
+			myblow.encryptedString = keyers2;	
+			
+			oarchive(myblow);
+		}
+		
+		std::string nextx = rs.str();
+		//std::cout << nextx << std::endl;
+		//size_t t = sizeof(nextx);
+		write(sockfb, nextx.c_str(), 1000);
 	
-	write(sockfb, "Hello, world!\n", 13);
+	
+	//-----------------------------------------------------
+	//Part 4 gets the serialized encrypted nonce and deserilize it
+	
+	std::stringstream er; 
+	char bufe[1000];
+	
+	read(sockfb, bufe, 1000);
+	
+	string stri(bufe);
+	
+	er << stri;
+	
+	{
+	cereal::JSONInputArchive iarchive(er);	
+	MyBlow myblow;
+	iarchive(myblow);
+	newkey=myblow.encryptedString;
+	//std::cout << newkey << std::endl;
+	} 
+	
+	//-----------------------------------------------------
+	//Decrypt it and deserilize it again to expose the nonce
+	
+	int noncetwo;
+	
+	
+	std::string varNew = bf.Decrypt_CBC(newkey);
+	
+	std::stringstream qw;
+	qw << varNew;
+	//std::cout << varNew << std::endl;
+	{
+	cereal::JSONInputArchive iarchive(qw);	
+	MyClass mydata2;
+	iarchive(mydata2);
+	noncetwo=mydata2.nonceOne;
+	} 
+	std::cout << noncetwo << std::endl;
+	
+	//---------------------------------------------------------====
+	long fnonce = f(noncetwo);
+	std::string inputN;
+	std::cout << fnonce << std::endl;
+	std::stringstream as; 
+			{
+				cereal::JSONOutputArchive oarchive(as);
+				MyData mydata5;
+				mydata5.fnoncer = fnonce;	
+				
+				oarchive(mydata5);
+			}
+			
+			const char* input5 = as.str().c_str();
+
+			inputN = b.Encrypt_CBC(input5);
+			
+			//-----------------------------------------------------
+			//Then it seralizes the complete encrypted payload that is going to A and writes it to A.
+			
+			std::stringstream zx;
+				{
+					cereal::JSONOutputArchive oarchive(zx);
+					MyBlow myblow5;
+					myblow5.encryptedString = inputN;	
+					
+					oarchive(myblow5);
+				}
+				
+				std::string nexty = zx.str();
+				
+				
+				write(sockfb, nexty.c_str(), 1000);
 	
 	
 	close(sockfb);
+	
 	
 	return 0;
 }

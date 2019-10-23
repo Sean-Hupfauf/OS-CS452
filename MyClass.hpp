@@ -5,11 +5,11 @@ struct MyClass
 {
   int nonceOne;
   std::string request;
-
+  int fnoncer;
   // Этот метод позволяет cereal узнать какие члены данных сериализовать:
   template<class Archive>
   void serialize(Archive & archive) {
-    archive(nonceOne, request);  // для сериализации "вещей" нужно передать их в архив.
+    archive(nonceOne, request, fnoncer);  // для сериализации "вещей" нужно передать их в архив.
   }
 
   // Функцию сериализации можно вынести из дефиниции класса или разделить
