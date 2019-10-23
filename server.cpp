@@ -136,7 +136,7 @@ char buffer[256];
 			cereal::JSONOutputArchive oarchive(sf);
 			MyTwoB mytwoB;
 			
-			mytwoB.IDa = 1;
+			mytwoB.IDa = "10.35.195.46";
 			mytwoB.sessionKey = "FEDCBA9876543210";
 			
 			oarchive(mytwoB);

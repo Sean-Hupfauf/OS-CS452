@@ -3,7 +3,7 @@
 
 struct PartTwoB
 {
-  int IDa;
+  std::string IDa;
   std::string sessionKey;
   //std::string encryptedString;
   
