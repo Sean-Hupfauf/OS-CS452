@@ -143,6 +143,7 @@ char buffer[256];
 		}
 		const char* inputB = sf.str().c_str();
 		BLOWFISH bf("FEDCBA9876543210");
+		BLOWFISH b("AEDCBA9876543210");
 		inputBefore = bf.Encrypt_CBC(inputB);
 	
 	
@@ -165,7 +166,7 @@ char buffer[256];
 			oarchive(mytwo);
 		}
 		const char* input = st.str().c_str();
-		inputM = bf.Encrypt_CBC(input);
+		inputM = b.Encrypt_CBC(input);
 	
 	
 	//-----------------------------------------------------

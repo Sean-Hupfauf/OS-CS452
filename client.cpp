@@ -138,6 +138,7 @@ char buffer[256];
 	std::string keyers;
 	std::string keyers2;
 	BLOWFISH bf("FEDCBA9876543210");
+	BLOWFISH b("AEDCBA9876543210");
 
 			std::stringstream sr; 
 			char buf[1000];
@@ -175,7 +176,7 @@ char buffer[256];
 			//Decypted and exposed the Ks, Request, Nonce, and encryptedString for
 			//B's encrypted data containing Ks and IDa
 			
-			std::string varThree = bf.Decrypt_CBC(keyers2);
+			std::string varThree = b.Decrypt_CBC(keyers2);
 			
 			std::stringstream sq;
 			sq << varThree;
