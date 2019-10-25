@@ -52,21 +52,9 @@ int randomNumber() {
 
 //-----------------------------------------------------
 
-long f(long nonce) {
-    const long A = 48271;
-    const long M = 2147483647;
-    const long Q = M/A;
-    const long R = M%A;
-
-	static long state = 1;
-	long t = A * (state % Q) - R * (state / Q);
-	
-	if (t > 0)
-		state = t;
-	else
-		state = t + M;
-	return (long)(((double) state/M)* nonce);
-}
+/* long f(long nonce) {
+    
+} */
 
 //-----------------------------------------------------
 
@@ -105,16 +93,9 @@ char buffer[256];
 	}
 	//-----------------------------------------------------
 	
-        //Nonce f function 
-		long nonceR = 5647892341;
-		const int MAX = 20;
-		  long zach = 5647892341;
-		  for  (int i = 1; i <= MAX; i++) {
-
-				long nonceR = f(zach);
-		  } 
+       
 		  
-		int nonce = randomNumber();  
+		int nonce1 = randomNumber();  
 		  
         
 	//-----------------------------------------------------
@@ -123,14 +104,14 @@ char buffer[256];
 		{
 			cereal::JSONOutputArchive oarchive(ss);
 			MyData mydata;
-			mydata.nonceOne = nonce;	
+			mydata.nonceOne = nonce1;	
 			mydata.request = "Request: Ks for IDb";
 			
 			oarchive(mydata);
 		}
 		
 		const char* input = ss.str().c_str();
-		size_t t = sizeof(input);
+		//size_t t = sizeof(input);
 		write(sockfd, input, 255);
 	
 	
@@ -201,7 +182,7 @@ char buffer[256];
 	bcopy((char *)server2->h_addr,
 		(char *)&serv_addr2.sin_addr.s_addr,
 		server2->h_length);
-	serv_addr2.sin_port = htons(9538);
+	serv_addr2.sin_port = htons(9518);
 	 
 	if (connect(sockfb, (struct sockaddr *) &serv_addr2, sizeof(serv_addr2)) < 0) {
 		error("ERROR connecting");
@@ -266,7 +247,24 @@ char buffer[256];
 	std::cout << noncetwo << std::endl;
 	
 	//---------------------------------------------------------====
-	long fnonce = f(noncetwo);
+	//long fnonce = f(noncetwo);
+	
+	const long A = 48271;
+    const long M = 2147483647;
+    const long Q = M/A;
+    const long R = M%A;
+
+	static long state = 65;
+	long t = A * (state % Q) - R * (state / Q);
+	
+	
+	if (t > 0)
+		state = t;
+	else
+		state = t + M;
+	long fnonce=(long)((((double) state/M)* noncetwo)+(M/noncetwo));
+	
+	
 	std::string inputN;
 	std::cout << fnonce << std::endl;
 	std::stringstream as; 

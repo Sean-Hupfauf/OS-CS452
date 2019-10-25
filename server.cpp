@@ -37,6 +37,8 @@ void error(const char *msg) {
 
 //-----------------------------------------------------
 
+
+
 int main (int argc, char *argv[]) {
 	
 char buffer[256];
@@ -183,7 +185,7 @@ char buffer[256];
 		
 		std::string nextx = sr.str();
 		
-		size_t t = sizeof(nextx);
+		//size_t t = sizeof(nextx);
 		write(newsockfd, nextx.c_str(), 1000);
 		
 	//-----------------------------------------------------

@@ -19,7 +19,7 @@
 #include "cereal/archives/binary.hpp"
 #include "cereal/archives/json.hpp"
 
-#define PORT 9538
+#define PORT 9518
 #define MAXVALUE 11500
 
 typedef MyClass MyData;
@@ -33,6 +33,22 @@ using namespace std;
 void error(const char *msg) {
 	perror(msg);
 	exit(1);
+}
+
+long f(long nonce) {
+    const long A = 48271;
+    const long M = 2147483647;
+    const long Q = M/A;
+    const long R = M%A;
+
+	static long state = 65;
+	long t = A * (state % Q) - R * (state / Q);
+	
+	if (t > 0)
+		state = t;
+	else
+		state = t + M;
+	return (long)((((double) state/M)* nonce)+(M/nonce));
 }
 
 int randomNumber() {
@@ -164,7 +180,7 @@ char buffer[256];
 			} 
 			
 			
-			int nonce = randomNumber();  
+			long nonce5 = 454;  
 			std::string inputM;
         
 			//-----------------------------------------------------
@@ -173,7 +189,7 @@ char buffer[256];
 			{
 				cereal::JSONOutputArchive oarchive(ss);
 				MyData mydata;
-				mydata.nonceOne = nonce;	
+				mydata.nonceOne = nonce5;	
 				
 				oarchive(mydata);
 			}
@@ -239,6 +255,8 @@ char buffer[256];
 			} 
 			std::cout << fnonce5 << std::endl;
 			
+			nonce5 = f(nonce5);
+			std::cout << nonce5 << std::endl;
 	close(newsockfb);
 	close(sockfb);
 	return 0;
