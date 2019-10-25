@@ -11,12 +11,16 @@
 #include <bitset>
 #include <math.h>
 #include <sstream>
+#include <fstream>
+#include "blowfish.h"
 #include "MyClass.hpp"
 #include "cereal/archives/binary.hpp"
 #include "cereal/archives/json.hpp"
 
-#define PORT 9551
+#define PORT 9568
 #define MAXVALUE 11500
+#define bytesRead 1024
+#define bytesEncrypt 3*bytesRead +35
 
 typedef MyClass MyData;
 using namespace std;
@@ -95,7 +99,7 @@ char buffer[256];
 	}
 	
 	//-----------------------------------------------------
-			char buf[256];
+			/*char buf[256];
 			read(newsockfd, buf, 255);
 			std::cout << buf << std::endl;
 			std::stringstream ss;
@@ -107,7 +111,7 @@ char buffer[256];
 			iarchive(mydata);
 			std::cout << mydata.x << std::endl << mydata.y << std::endl;
 			}
-			
+			*/
 	
 	
 	//-----------------------------------------------------
@@ -148,6 +152,43 @@ char buffer[256];
 
 	write(newsockfd, buffer, si);
 	*/
+	
+	//-----------------------------------------------------
+	int numR, remain;
+	read(newsockfd, &numR, 4);
+	read(newsockfd, &remain, 4);
+	std::cout << numR;
+	int i;
+	char red[bytesRead];
+	char rRed[remain];
+	ofstream outFile;
+	outFile.open("copie.txt");
+	BLOWFISH bf("FEDCBA9876543210");
+	
+	for ( i = 0; i < numR; i++) {
+		
+		read(newsockfd, red, bytesRead);
+		string str(red);
+		std::cout << red << endl;
+		std:: cout << str.length()<< " " << i << endl;
+        /*string decryptedString = bf.Decrypt_CBC(str);
+		strcpy(cRed, decryptedString.c_str());*/
+		outFile.write(red,bytesRead);
+		memset(red, 0, bytesRead);
+	}
+	
+		read(newsockfd, &rRed, remain);
+		string str(rRed);
+		std::cout << rRed << endl;
+        /*string decryptedString = bf.Decrypt_CBC(str);
+		strcpy(cRed, decryptedString.c_str());*/
+		outFile.write(rRed,remain);
+		memset(rRed, 0, remain);
+	
+	
+	outFile.close();
+	
+	
 	
 	//-----------------------------------------------------
 	

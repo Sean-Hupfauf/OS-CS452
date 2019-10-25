@@ -11,12 +11,14 @@
 #include <math.h>
 #include "blowfish.h"
 #include <sstream>
+#include <fstream>
 #include "MyClass.hpp"
 #include "cereal/archives/binary.hpp"
 #include "cereal/archives/json.hpp"
 
-#define PORT 9551
+#define PORT 9568
 #define MAXVALUE 11500
+#define bytesRead 1024
 
 typedef MyClass MyData;
 using namespace std;
@@ -82,7 +84,7 @@ char buffer[256];
 	//-----------------------------------------------------
 	
         //Nonce 
-		long nonceR = 5647892341;
+	/*	long nonceR = 5647892341;
 		const int MAX = 20;
 		  long nonce = 5647892341;
 		  for  (int i = 1; i <= MAX; i++) {
@@ -105,13 +107,74 @@ char buffer[256];
 			std::cout << input << std::endl;
 		size_t t = sizeof(input);
 		write(sockfd, input, 255);
+	*/
+	
+	//-----------------------------------------------------
+	char x[bytesRead];
+	char y[bytesRead];
+    ifstream inFile;
+	ofstream outFile;
+    
+    inFile.open("bible.txt");
+    if (!inFile) {
+        cout << "Unable to open file";
+        exit(1); // terminate with error
+    }
+	outFile.open("copi.txt");
+    inFile.seekg(0, std::ios::end);
+	size_t z = inFile.tellg();
+	//std::cout << z%bytesRead;
+	inFile.seekg(0, std::ios::beg);
+	BLOWFISH bf("FEDCBA9876543210");
+	int numRotations = z/bytesRead;
+	int remainder = z%bytesRead;
+	std::cout << numRotations << endl;
+	int convRot = htonl(numRotations);
+	write(sockfd, &numRotations, 4);
+	write(sockfd, &remainder, 4);
+	int i = 0;
+    while (inFile.peek() != EOF && z >=0) {
+		std::cout << i++ <<endl;
+		if(z > bytesRead) {
+		inFile.read(x, bytesRead);
+		z-= bytesRead;
+		write (sockfd, x, bytesRead);
+		/*string str(x);
+        string encryptedString = bf.Encrypt_CBC(str);
+        std::cout << encryptedString << endl << "... " << encryptedString.length() << endl;
+		
+		write(sockfd, encryptedString.c_str(), );
+		
+		
+        string decryptedString = bf.Decrypt_CBC(encryptedString);
+		strcpy(y, decryptedString.c_str());
+		outFile.write(y,bytesRead);*/
+		memset(x, 0, bytesRead);
+		memset(y, 0, bytesRead);
+		}
+		else {
+		inFile.read(x, z);
+		write (sockfd, x, z);
+		string str(x);
+        string encryptedString = bf.Encrypt_CBC(str);
+        std::cout << encryptedString << endl << "... " << encryptedString.length() << endl;
+        string decryptedString = bf.Decrypt_CBC(encryptedString);
+		strcpy(y, decryptedString.c_str());
+		outFile.write(x,z);
+        //std::cout << str << endl << "... " << str.length() << endl;
+		z-= bytesRead;
+		}
+    }
+	inFile.close();
+	outFile.close();
+	
 	
 	
 	//-----------------------------------------------------
 	
 		std::string stringOne = "hello there";
 		//This is wrong -> std::stringstream ss(std::ios::binary); 
-		/*const char* input;
+		/* const char* input;
 		int j;
         {
 		std::stringstream ss(std::ios::binary | std::ios::out | std::ios::in); 
@@ -121,7 +184,7 @@ char buffer[256];
 
 		m1 = {nonceR};
 		oarchive(m1);  
-		
+		 
 		input = ss.str().c_str();
 		j = sizeof(input);
 		printf("%d \n", j);
@@ -137,7 +200,6 @@ char buffer[256];
    
         //BLOWFISH bf("FEDCBA9876543210");
 
-        //string encryptedString = bf.Encrypt_CBC("hey");
         
         //std::istringstream sstream(m1);
         
@@ -148,14 +210,11 @@ char buffer[256];
 			//sstream >> si;
 			
 	
-			//write(sockfd, (const void*)&m1, sizeof(m1));
+			//write(sockfd, (const void*)&m1, sizeof(m1));*/
 	//-----------------------------------------------------
 	
-	/* 			n = read(sockfd,buffer,255);
-				if (n < 0) error("ERROR reading from socket");
-				printf("Here is the message: %s\n",buffer);
-    */
-
+	/* 			n = read(sockfd
+	*/
 	close(sockfd);
 	return 0;
 }

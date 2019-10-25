@@ -1,0 +1,77 @@
+An SVA at UW-Eau Claire will have mostly UW-Eau Claire student members, but it’s possible that some
+members may not be students (e.g. faculty, community members). The database will store the
+following information about SVA members: first name, last name, student number (if a UW-Eau Claire
+student), gender, date of birth, address, mobile phone number, and email address.
+
+
+
+The SVA will be run by the Executive Committee (EC), whose members are all UW-Eau Claire students.
+This committee consists of the President, Vice President, Secretary, Treasurer, two Logistics Officers,
+two Events Managers, a Communications Manager, two Marketing Managers, a Webmaster, three
+Academic Volunteering Coordinators, two In-School Mentors, and five Platoon Leaders. Each member of
+the SVA is assigned to a Platoon Leader, unless the person is member of the executive committee. For
+each executive committee member, the database should store: first name, last name, short biography,
+something unique about that person, their position in the committee, and their mobile phone number.
+SVA members can apply to be a member of the executive committee (if they are UW-Eau Claire
+students).
+
+ There is a deadline for applications every year. Applications need to be submitted by the 15th
+of September each year. Some of the positions on the executive committee require special skills. For 
+example, the Logistics Officer must have a full driving license, Marketing Managers must have
+experience with design software, and the Webmaster must have appropriate Web development
+experience. The database should track what experience is required for each position.
+
+
+In order to register a particular job for the SVA, Eau Claire residents can call a toll-free phone number,
+send a text message or enter their request via a website. For each registered job, the database should
+store information about how the job was registered (toll-free call number, text message or website), the
+name of the resident, description of help needed, address, preferred date and time. The Events
+Managers process the registered jobs and prioritize them. They also add additional information about
+jobs that are selected to be carried out (as events): the estimated number of volunteers needed and the
+number of hours per volunteer. Note that not all registered jobs will actually become events, due to
+limited resources.
+The SVA will conduct a variety of events, some of which come from the community, and others are
+events suggested by the executive committee or SVA members. Events are classified into one of the
+following categories:
+- Muscle (gardening, painting, cleaning etc.)
+- Dish it up (e.g. feeding the homeless)
+- Green (Sustaining, diversifying, growing our future)
+- Outreach (Reaching out, raising funds, and securing our future)
+- Creativity (beautifying, painting, etc.)
+- Other (e.g. helping Red Cross to pack winter clothes, help in running the local food pantry’s BBQ
+dinner)
+The following details need to be stored for each event: event name, category, start date and time, end
+date and time, location (i.e. the meeting place), description, contact person (i.e. the member of SVA in
+charge of the event), and contact email address. For some events, there might be additional notes
+added (e.g. “Bring your own drink bottle and warm comfy clothing”). An event might be repeated several
+times; e.g. the local food pantry community BBQs may be running on several weekends. Some events
+have reward(s) given to each volunteer by a particular partner (e.g. free Subway voucher provided by
+Subway Bush Inn). For each event, the event manager prepares the initial budget which needs to be
+approved by the Treasurer and the EC. The database needs to track which official(s) has approved a
+budget and on which date.
+SVA members and people from the community can sign up for events (via the Web page or the SVA
+app). The information that needs to be stored from non-members of SVA assigned to an event includes
+first name, last name and contact details (email address and mobile phone number).
+The SVA has a number of partners, which are community organizations (government, non-profit or
+businesses). Details of partner organisations are saved in the database, including the
+business/organization name, logo, information about the contact person from each organization (first
+name, last name, email address and mobile phone number), and the organization’s office address. Some
+partners provide monetary donations, while others provide in-kind support, rewards for volunteers, or
+participate in the events (e.g., City Care might organize collection of green waste for Green events).
+Multiple partner organisations may support and/or participate in any event.
+SVA publish news articles on their website which also need to be stored in the database. The
+information about each news article consists of its title, date posted, article URL, URL of image inserted
+in the article and the text of the article.
+The university wishes to formally recognize students’ volunteer work, including volunteering for SVA.
+The SVA database therefore needs to store information about the events a particular student
+participated in, including the total number of hours (to the nearest quarter hour) worked on an event
+by each student. This participation information should also be tracked for non-student volunteers.
+Typical queries that the database should support include the following:
+• Find all volunteers who participated in Muscle events in 2020.
+• Find all news articles posted between January 2020 and March 2020.
+• Find all Green events in which the Eau Claire City Council participated asrticular student
+participated in, including the total number of hours (to the nearest quarter hour) worked on an event
+by each student. This participation information should also be tracked for non-student volunteers.
+Typical queries that the database should support include the following:
+• Find all volunteers who participated in Muscle events in 2020.
+• Find all news articles posted between January 
