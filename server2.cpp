@@ -15,7 +15,8 @@
 #include "PartTwo.hpp"
 #include "PartTwoB.hpp"
 #include "blowfisher.hpp"
-#include "blowfish.h"
+#include "blowfishOne.h"
+#include "blowfishTwo.h"
 #include "cereal/archives/binary.hpp"
 #include "cereal/archives/json.hpp"
 
@@ -28,6 +29,10 @@ typedef PartTwoB MyTwoB;
 typedef blowfisher MyBlow;
 
 using namespace std;
+
+long nonceTwo;
+std::string bKey;
+std::string sessionKey;
 
 
 void error(const char *msg) {
@@ -51,23 +56,38 @@ long f(long nonce) {
 	return (long)((((double) state/M)* nonce)+(M/nonce));
 }
 
-int randomNumber() {
+// int randomNumber() {
 	
-    int iSecret;
+    // int iSecret;
 
-    /* initialize random seed: */
-    srand (time(NULL));
+    // /* initialize random seed: */
+    // srand (time(NULL));
 
-    /* generate secret number between 1 and 10: */
-    iSecret = rand() % 10 + 1;
+    // /* generate secret number between 1 and 10: */
+    // iSecret = rand() % 10 + 1;
     
-	return iSecret;
-}
+	// return iSecret;
+// }
 //-----------------------------------------------------
 
 int main (int argc, char *argv[]) {
+	
 
-char buffer[256];
+
+    std::cout << "----Client 'B' Setup----" << endl;
+	
+	std::cout << "Enter a nonce: ";
+	std::cin >> nonceTwo;
+	
+	std::cout << "Enter client private key for 'B': ";
+	std::cin >> bKey;
+	
+	
+	
+	
+	
+
+    char buffer[256];
 	/*
 	============================
 	SET UP CONNECTION
@@ -138,8 +158,8 @@ char buffer[256];
 			printf("Here is the message: %s\n",buffer); */
 			
 			std::string keyers;
-			BLOWFISH bf("FEDCBA9876543210");
-			BLOWFISH b("AEDCBA9876543210");
+			BLOWFISHONE bf(bKey); //b key
+			
 
 			std::stringstream sr; 
 			char buf[1000];
@@ -161,7 +181,7 @@ char buffer[256];
 			//Decypted and exposed the Ks, Request, Nonce, and encryptedString for
 			//B's encrypted data containing Ks and IDa
 			
-			std::string varThree = b.Decrypt_CBC(keyers);
+			std::string varThree = bf.Decrypt_CBC(keyers);  //decrypt with 'b' key
 			
 			std::stringstream sq;
 			sq << varThree;
@@ -175,12 +195,13 @@ char buffer[256];
 			cereal::JSONInputArchive iarchive(sq);	
 			MyTwoB mytwoB;
 			iarchive(mytwoB);
+			sessionKey = mytwoB.sessionKey;
 			std::cout << mytwoB.IDa << std::endl << mytwoB.sessionKey << std::endl;;
 			
 			} 
 			
 			
-			long nonce5 = 454;  
+			
 			std::string inputM;
         
 			//-----------------------------------------------------
@@ -189,14 +210,15 @@ char buffer[256];
 			{
 				cereal::JSONOutputArchive oarchive(ss);
 				MyData mydata;
-				mydata.nonceOne = nonce5;	
+				mydata.nonceOne = nonceTwo;	
 				
 				oarchive(mydata);
 			}
 			
 			const char* input4 = ss.str().c_str();
-
-			inputM = b.Encrypt_CBC(input4);
+			
+            BLOWFISHTWO b(sessionKey);  //session key
+			inputM = b.Encrypt_CBC(input4);  //encrypt with sessionKey
 			
 			//-----------------------------------------------------
 			//Then it seralizes the complete encrypted payload that is going to A and writes it to A.
@@ -242,7 +264,7 @@ char buffer[256];
 			int fnonce5;
 			
 			
-			std::string varNew = bf.Decrypt_CBC(newkey);
+			std::string varNew = b.Decrypt_CBC(newkey);  //decrypt using session key
 			
 			std::stringstream vb;
 			vb << varNew;
@@ -255,8 +277,13 @@ char buffer[256];
 			} 
 			std::cout << fnonce5 << std::endl;
 			
-			nonce5 = f(nonce5);
-			std::cout << nonce5 << std::endl;
+			nonceTwo = f(nonceTwo);
+			std::cout << nonceTwo << std::endl;
+			
+			
+			//the good stuff happens
+			
+			
 	close(newsockfb);
 	close(sockfb);
 	return 0;

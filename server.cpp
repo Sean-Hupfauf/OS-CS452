@@ -15,7 +15,8 @@
 #include "PartTwo.hpp"
 #include "PartTwoB.hpp"
 #include "blowfisher.hpp"
-#include "blowfish.h"
+#include "blowfishOne.h"
+#include "blowfishTwo.h"
 #include "cereal/archives/binary.hpp"
 #include "cereal/archives/json.hpp"
 
@@ -42,6 +43,27 @@ void error(const char *msg) {
 int main (int argc, char *argv[]) {
 	
 char buffer[256];
+
+    std::string sessionKey;
+	std::string aKey;
+	std::string bKey;
+
+    std::cout << "----KDC Setup----" << endl;
+	
+	std::cout << "Enter session key: ";
+	std::cin >> sessionKey;
+	
+	std::cout << "Enter client private key for 'A': ";
+	std::cin >> aKey;
+	
+	std::cout << "Enter client private key for 'B': ";
+	std::cin >> bKey;
+	
+	
+
+
+
+
 	/*
 	============================
 	SET UP CONNECTION
@@ -139,14 +161,14 @@ char buffer[256];
 			MyTwoB mytwoB;
 			
 			mytwoB.IDa = "10.35.195.46";
-			mytwoB.sessionKey = "FEDCBA9876543210";
+			mytwoB.sessionKey = sessionKey;  //session key
 			
 			oarchive(mytwoB);
 		}
 		const char* inputB = sf.str().c_str();
-		BLOWFISH bf("FEDCBA9876543210");
-		BLOWFISH b("AEDCBA9876543210");
-		inputBefore = bf.Encrypt_CBC(inputB);
+		BLOWFISHONE b(bKey);  // b key
+		BLOWFISHTWO bf(aKey);   // a key  //dont follow!!!!!!!!!!!!!
+		inputBefore = b.Encrypt_CBC(inputB); // encrypts with b 
 	
 	
 	//===============================================
@@ -163,12 +185,12 @@ char buffer[256];
 			mytwo.nonceOne = nonceOne;	
 			mytwo.request = request;
 			mytwo.encryptedString = inputBefore;
-			mytwo.sessionKey = "FEDCBA9876543210";
+			mytwo.sessionKey = sessionKey;  //session key
 			
 			oarchive(mytwo);
 		}
 		const char* input = st.str().c_str();
-		inputM = b.Encrypt_CBC(input);
+		inputM = bf.Encrypt_CBC(input);  //encrypt with 'a' key
 	
 	
 	//-----------------------------------------------------

@@ -8,7 +8,7 @@ int main() {
     
 
     std::cout << "hereOne:";
-    BLOWFISH bf("FEDCBA9876543210");
+    BLOWFISH bf("BBBBBBBBBBBBBBBB");
     std::string stringOne = "hello there";
     std::string stringTwo = "general kenobi";
     
