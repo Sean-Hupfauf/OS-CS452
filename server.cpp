@@ -14,15 +14,17 @@
 #include <fstream>
 #include "blowfish.h"
 #include "MyClass.hpp"
+#include "MyNumbers.hpp"
 #include "cereal/archives/binary.hpp"
 #include "cereal/archives/json.hpp"
 
-#define PORT 9568
+#define PORT 9569
 #define MAXVALUE 11500
 #define bytesRead 1024
-#define bytesEncrypt 3*bytesRead +35
+#define bytesEncrypt 2*bytesRead +100
 
 typedef MyClass MyData;
+typedef MyNumbers MyNumber;
 using namespace std;
 
 
@@ -154,36 +156,72 @@ char buffer[256];
 	*/
 	
 	//-----------------------------------------------------
-	int numR, remain;
-	read(newsockfd, &numR, 4);
-	read(newsockfd, &remain, 4);
-	std::cout << numR;
-	int i;
-	char red[bytesRead];
-	char rRed[remain];
+	
+	//Make File to Write to
 	ofstream outFile;
 	outFile.open("copie.txt");
-	BLOWFISH bf("FEDCBA9876543210");
 	
+	//Blowfish Declaration
+	BLOWFISH bf("FEDCB98765432100");
+	
+	
+	int numR, remain, len;
+	uint32_t numRN, remainN, lenN;
+	
+	//Find Number of Loops
+	read(newsockfd, &numRN, sizeof(numRN));
+	numR = ntohl(numRN);
+	
+	//Find Number of Chars in Last Iteration
+	read(newsockfd, &remainN, sizeof(remainN));
+	remain = ntohl(remainN);
+	
+	//std::cout << numR << endl;
+	char red[4000];
+	
+	int i;
 	for ( i = 0; i < numR; i++) {
 		
-		read(newsockfd, red, bytesRead);
-		string str(red);
+		//Read in Length of Encrypted String
+		read(newsockfd, &lenN, sizeof(lenN));
+		len = ntohl(lenN);
+		
+		std::cout << len << endl;
+		//Declare a char Array to read into
+		
+		
+		//Read into Char Array
+		read(newsockfd, red, len);
+		red[len] = '\0';
+		
+		//Convert to String
+		//string str(red);
+		
+		
 		std::cout << red << endl;
-		std:: cout << str.length()<< " " << i << endl;
-        /*string decryptedString = bf.Decrypt_CBC(str);
-		strcpy(cRed, decryptedString.c_str());*/
-		outFile.write(red,bytesRead);
-		memset(red, 0, bytesRead);
+		//std:: cout << str.length()<< " " << i << " " << numR << endl;
+		
+		
+		//Decrypt String
+        //string decryptedString = bf.Decrypt_CBC(str);
+		
+		//Turn string into Char Array
+		//char dec[len];
+		//strcpy(dec, decryptedString.c_str());
+		
+		//Reset Variables
+		memset(red, 0, 3000);
+		memset(&len, 0, sizeof(len));
+		memset(&lenN, 0, sizeof(len));
 	}
 	
-		read(newsockfd, &rRed, remain);
+		/*read(newsockfd, &rRed, remain);
 		string str(rRed);
 		std::cout << rRed << endl;
         /*string decryptedString = bf.Decrypt_CBC(str);
-		strcpy(cRed, decryptedString.c_str());*/
+		strcpy(cRed, decryptedString.c_str());
 		outFile.write(rRed,remain);
-		memset(rRed, 0, remain);
+		memset(rRed, 0, remain);*/
 	
 	
 	outFile.close();

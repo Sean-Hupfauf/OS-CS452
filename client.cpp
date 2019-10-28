@@ -13,14 +13,16 @@
 #include <sstream>
 #include <fstream>
 #include "MyClass.hpp"
+#include "MyNumbers.hpp"
 #include "cereal/archives/binary.hpp"
 #include "cereal/archives/json.hpp"
 
-#define PORT 9568
+#define PORT 9569
 #define MAXVALUE 11500
 #define bytesRead 1024
 
 typedef MyClass MyData;
+typedef MyNumbers MyNumber;
 using namespace std;
 
 void error(const char *msg) {
@@ -110,69 +112,101 @@ char buffer[256];
 	*/
 	
 	//-----------------------------------------------------
+	
+	//variable declaration
 	char x[bytesRead];
-	char y[bytesRead];
     ifstream inFile;
-	ofstream outFile;
+	//ofstream outFile;
     
-    inFile.open("bible.txt");
+	//Open Input File
+    inFile.open("world192.txt");
     if (!inFile) {
         cout << "Unable to open file";
         exit(1); // terminate with error
     }
-	outFile.open("copi.txt");
+	
+	//Figuring Out Size of File
     inFile.seekg(0, std::ios::end);
 	size_t z = inFile.tellg();
 	//std::cout << z%bytesRead;
 	inFile.seekg(0, std::ios::beg);
-	BLOWFISH bf("FEDCBA9876543210");
+	
+	
+	BLOWFISH bf("FEDCB98765432100");
+	
+	//Number of Strings Sent Over
 	int numRotations = z/bytesRead;
+	uint32_t convRot = htonl(numRotations);
+	write(sockfd, &convRot, sizeof(convRot));
+	
+	//Number of Chars on Last String
 	int remainder = z%bytesRead;
-	std::cout << numRotations << endl;
-	int convRot = htonl(numRotations);
-	write(sockfd, &numRotations, 4);
-	write(sockfd, &remainder, 4);
-	int i = 0;
+	uint32_t convRem = htonl(remainder);
+	write(sockfd, &convRem, sizeof(convRem));
+	
+	char wri[3000];
+	//std::cout << numRotations << endl;
+	//int i = 0;
     while (inFile.peek() != EOF && z >=0) {
-		std::cout << i++ <<endl;
+		//std::cout << i++ <<endl;
+		
 		if(z > bytesRead) {
-		inFile.read(x, bytesRead);
-		z-= bytesRead;
-		write (sockfd, x, bytesRead);
-		/*string str(x);
-        string encryptedString = bf.Encrypt_CBC(str);
-        std::cout << encryptedString << endl << "... " << encryptedString.length() << endl;
-		
-		write(sockfd, encryptedString.c_str(), );
-		
-		
-        string decryptedString = bf.Decrypt_CBC(encryptedString);
-		strcpy(y, decryptedString.c_str());
-		outFile.write(y,bytesRead);*/
-		memset(x, 0, bytesRead);
-		memset(y, 0, bytesRead);
+			//Read from File
+			inFile.read(x, bytesRead);
+			z-= bytesRead;
+			
+			//write (sockfd, x, bytesRead);
+			
+			//Convert to String
+			string str(x);
+			//Convert to Encryption String
+			string encryptedString = bf.Encrypt_CBC(str);
+
+			std::cout << encryptedString << endl << "... " << encryptedString.length() << endl;
+			
+			//Length of Encrypted String
+			//int leng = strlen(encryptedString.c_str());
+			int leng = strlen(x);
+			uint32_t convLeng = htonl(leng);
+			std::cout << leng <<endl;
+			write(sockfd, &convLeng, sizeof(convLeng));
+			
+			//Write Encrypted String
+			strcpy(wri, encryptedString.c_str());
+			write(sockfd, x, leng);
+
+			//Resets x
+			memset(x, 0, bytesRead);
+			memset(wri, 0, 2999);
 		}
 		else {
-		inFile.read(x, z);
-		write (sockfd, x, z);
-		string str(x);
-        string encryptedString = bf.Encrypt_CBC(str);
-        std::cout << encryptedString << endl << "... " << encryptedString.length() << endl;
-        string decryptedString = bf.Decrypt_CBC(encryptedString);
-		strcpy(y, decryptedString.c_str());
-		outFile.write(x,z);
-        //std::cout << str << endl << "... " << str.length() << endl;
-		z-= bytesRead;
+			//Read the File
+			inFile.read(x, z);
+			//write (sockfd, x, z);
+			
+			//Convert to String
+			string str(x);
+			
+			//Encrypt String
+			string encryptedString = bf.Encrypt_CBC(str);
+			//std::cout << encryptedString << endl << "... " << encryptedString.length() << endl;
+			
+			
+			//string decryptedString = bf.Decrypt_CBC(encryptedString);
+			//strcpy(y, decryptedString.c_str());
+			//outFile.write(x,z);
+			//std::cout << str << endl << "... " << str.length() << endl;
+			z-= bytesRead;
 		}
     }
 	inFile.close();
-	outFile.close();
+	//outFile.close();
 	
 	
 	
 	//-----------------------------------------------------
 	
-		std::string stringOne = "hello there";
+		//std::string stringOne = "hello there";
 		//This is wrong -> std::stringstream ss(std::ios::binary); 
 		/* const char* input;
 		int j;
