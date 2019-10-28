@@ -17,6 +17,8 @@
 #include "blowfisher.hpp"
 #include "blowfishOne.h"
 #include "blowfishTwo.h"
+#include "md5.hpp"
+#include "secureConnection.hpp"
 #include "cereal/archives/binary.hpp"
 #include "cereal/archives/json.hpp"
 
@@ -56,18 +58,7 @@ long f(long nonce) {
 	return (long)((((double) state/M)* nonce)+(M/nonce));
 }
 
-// int randomNumber() {
-	
-    // int iSecret;
 
-    // /* initialize random seed: */
-    // srand (time(NULL));
-
-    // /* generate secret number between 1 and 10: */
-    // iSecret = rand() % 10 + 1;
-    
-	// return iSecret;
-// }
 //-----------------------------------------------------
 
 int main (int argc, char *argv[]) {
@@ -281,7 +272,63 @@ int main (int argc, char *argv[]) {
 			std::cout << nonceTwo << std::endl;
 			
 			
-			//the good stuff happens
+			//the good stuff happens: begin transfer
+			
+			
+			string secure = "no";
+			if(nonceTwo ==  fnonce5) { //if nonceTwo equals fnonce5 then there is a secure connection
+			    secure = "yes";				
+			} 
+			
+			string encryptedSecure = b.Encrypt_CBC(secure);  //encrypt with sessionKey
+			
+			
+			std::stringstream returnSecureMessage;
+			{
+			cereal::JSONOutputArchive oarchive(returnSecureMessage);	
+			secureConnection sc;
+			sc.secure = encryptedSecure;
+			oarchive(sc);
+			} 
+			
+			//send over encrypted message saying that connection is secure
+			write(newsockfb, returnSecureMessage.str().c_str(), 1000); 
+			
+			
+			
+			
+			
+			
+			
+			//read in encrypted string
+			std::stringstream encryptedTest; 
+			
+			char encryptedTestStringBuffer[1000];
+			
+			read(newsockfb, encryptedTestStringBuffer, 1000);
+			
+			string encryptedTestString(encryptedTestStringBuffer);
+			std::cout << endl << encryptedTestString  << endl;
+			encryptedTest << encryptedTestString;
+			
+			
+			//deserialize encrypted string
+			string encrypted;
+			{
+			cereal::JSONInputArchive iarchive(encryptedTest);	
+			MyBlow blower;
+			iarchive(blower);
+			encrypted = blower.encryptedString;
+			} 
+			
+			
+			
+			//decrypt 
+			string decryptedTestString = b.Decrypt_CBC(encrypted); //decrypt with session key
+			
+			std::cout << "Decrypted Message converted to hex: " << md5(decryptedTestString) << endl;
+			
+			std::cout << "Print S: " << decryptedTestString << endl; 
 			
 			
 	close(newsockfb);

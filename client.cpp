@@ -17,6 +17,8 @@
 #include "MyClass.hpp"
 #include "PartTwo.hpp"
 #include "PartTwoB.hpp"
+#include "md5.hpp"
+#include "secureConnection.hpp"
 #include "cereal/archives/binary.hpp"
 #include "cereal/archives/json.hpp"
 
@@ -34,6 +36,7 @@ using namespace std;
 long nonceOne;
 std::string aKey;
 std::string sessionKey;
+int option;
 
 void error(const char *msg) {
 	perror(msg);
@@ -74,6 +77,9 @@ int main(int argc, char*argv[]) {
 	
 	std::cout << "Enter client private key for 'A': ";
 	std::cin >> aKey;
+	
+	std::cout << "Press [1] for file transfer and [2] for sentence tranfer: ";
+	std::cin >> option;
 	
 	
     char buffer[256];
@@ -317,6 +323,57 @@ int main(int argc, char*argv[]) {
 				
 				write(sockfb, nexty.c_str(), 1000);
 	
+    //read input from 'B' to see if connection is secure	
+				
+	char secureBuffer[1000];
+	
+	read(sockfb, secureBuffer, 1000);
+	
+	string secureString(secureBuffer);
+	std::stringstream secureStream;
+	secureStream << secureString; 
+	
+	
+	string secureEncrypted;
+	{
+	cereal::JSONInputArchive iarchive(secureStream);	
+	secureConnection sc;
+	iarchive(sc);
+	secureEncrypted = sc.secure;
+	} 
+	
+	string secure = b.Decrypt_CBC(secureEncrypted);
+	
+	string testString;
+	if(secure == "yes") {
+		std::cout << "Enter string S (any length): ";
+		std::cin >> testString;
+		
+	} else {
+		std::cout << "Connection not secure" << endl;
+		close(sockfb);
+	}
+	
+    //print out hex of string
+	std::cout << "S converted to hex: " << md5(testString) << endl; 
+	
+	string encryptedHex = b.Encrypt_CBC(testString);
+	
+	
+	//encrypt and serialize then send over to 'B'
+
+	std::stringstream encryptedHexReturnToB;
+	
+	{
+	cereal::JSONOutputArchive oarchive(encryptedHexReturnToB);
+	blowfisher blow;
+	blow.encryptedString = encryptedHex;	
+	
+	oarchive(blow);
+	}
+	string a = encryptedHexReturnToB.str();
+	
+	write(sockfb, a.c_str(), 1000);
 	
 	close(sockfb);
 	
