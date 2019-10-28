@@ -20,7 +20,7 @@
 #include "cereal/archives/binary.hpp"
 #include "cereal/archives/json.hpp"
 
-#define PORT 9537
+#define PORT 9525
 #define MAXVALUE 11500
 
 typedef MyClass MyData;
@@ -44,20 +44,20 @@ int main (int argc, char *argv[]) {
 	
 char buffer[256];
 
-    std::string sessionKey;
-	std::string aKey;
-	std::string bKey;
+    std::string sessionKey = "FEDCBA9876543210";
+	std::string aKey = "AEDCBA9876543210";
+	std::string bKey = "BEDCBA9876543210";
 
-    std::cout << "----KDC Setup----" << endl;
+    // std::cout << "----KDC Setup----" << endl;
 	
-	std::cout << "Enter session key: ";
-	std::cin >> sessionKey;
+	// std::cout << "Enter session key: ";
+	// std::cin >> sessionKey;
 	
-	std::cout << "Enter client private key for 'A': ";
-	std::cin >> aKey;
+	// std::cout << "Enter client private key for 'A': ";
+	// std::cin >> aKey;
 	
-	std::cout << "Enter client private key for 'B': ";
-	std::cin >> bKey;
+	// std::cout << "Enter client private key for 'B': ";
+	// std::cin >> bKey;
 	
 	
 
@@ -208,7 +208,7 @@ char buffer[256];
 	
 	std::cout << endl;
     std::cout << "Send to ID_A:" << endl;
-    std::cout << "EKa[Ks||Req||N1||EKb(Ks,IDA)]: " << inputM << request << endl;
+    std::cout << "EKa[Ks||Req||N1||EKb(Ks,IDA)]" << endl;
     std::cout << "Ks: " << sessionKey << endl;
     std::cout << "N1: " << nonceOne << endl;
     std::cout << endl;

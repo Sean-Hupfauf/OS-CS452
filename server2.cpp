@@ -32,9 +32,6 @@ typedef blowfisher MyBlow;
 
 using namespace std;
 
-long nonceTwo;
-std::string bKey;
-std::string sessionKey;
 
 
 void error(const char *msg) {
@@ -63,15 +60,18 @@ long f(long nonce) {
 
 int main (int argc, char *argv[]) {
 	
+	long nonceTwo = 54;
+	std::string bKey = "BEDCBA9876543210";
+	std::string sessionKey = "FEDCBA9876543210";
 
 
-    std::cout << "----Client 'B' Setup----" << endl;
+    // std::cout << "----Client 'B' Setup----" << endl;
 	
-	std::cout << "Enter a nonce: ";
-	std::cin >> nonceTwo;
+	// std::cout << "Enter a nonce: ";
+	// std::cin >> nonceTwo;
 	
-	std::cout << "Enter client private key for 'B': ";
-	std::cin >> bKey;
+	// std::cout << "Enter client private key for 'B': ";
+	// std::cin >> bKey;
 	
 	
 	
@@ -200,7 +200,7 @@ int main (int argc, char *argv[]) {
 	        std::cout << "Recd from ID_A: " << endl;
 			std::cout << "EKb[Ks,IDA]: " << keyers << endl;
 			std::cout << "Ks: " << sessionKey << endl;
-			std::cout << "ID_A: " << id_a << endl;
+			std::cout << "N2: " << nonceTwo << endl;
 			std::cout << endl;	
 			
 			
@@ -228,11 +228,11 @@ int main (int argc, char *argv[]) {
 			
 			//print part 8
 			
-			// std::cout << endl;
-	        // std::cout << "Sent to ID_A: " << endl;
-	        // std::cout << "N2: " << nonceTwo << endl;
-			// std::cout << "EKs[N2]: " << inputM << endl;
-			// std::cout << endl;	
+			std::cout << endl;
+	        std::cout << "Sent to ID_A: " << endl;
+	        std::cout << "N2: " << nonceTwo << endl;
+			std::cout << "EKs[N2]: " << inputM << endl;
+			std::cout << endl;	
 			
 			
 			
@@ -299,7 +299,6 @@ int main (int argc, char *argv[]) {
 	        std::cout << "Recd from ID_A: " << endl;
 	        std::cout << "EKs[f(N2)]: " << newkey << endl;
 			std::cout << "f(N2): " << nonceTwo << endl;
-			std::cout << "N2: " << fnonce5 << endl;
 			std::cout << endl;	
 			
 			
@@ -351,12 +350,20 @@ int main (int argc, char *argv[]) {
 			encrypted = blower.encryptedString;
 			} 
 			
+			std::cout << "Receive EKs[S]" << endl; 
 			
+			std::cout << endl;	
+			
+			std::cout << "Print (EKs[S]) : " << encrypted << endl;
+
+			std::cout << endl;	
 			
 			//decrypt 
 			string decryptedTestString = b.Decrypt_CBC(encrypted); //decrypt with session key
 			
 			std::cout << "Decrypted Message converted to hex: " << md5(decryptedTestString) << endl;
+			
+			std::cout << endl;	
 			
 			std::cout << "Print S: " << decryptedTestString << endl; 
 			

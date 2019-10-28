@@ -22,7 +22,7 @@
 #include "cereal/archives/binary.hpp"
 #include "cereal/archives/json.hpp"
 
-#define PORT 9537
+#define PORT 9525
 #define MAXVALUE 11500
 
 typedef MyClass MyData;
@@ -33,10 +33,7 @@ typedef PartTwoB MyTwoB;
 using namespace std;
 
 
-long nonceOne;
-std::string aKey;
-std::string sessionKey;
-int option;
+//int option;
 
 void error(const char *msg) {
 	perror(msg);
@@ -69,17 +66,20 @@ int randomNumber() {
 
 int main(int argc, char*argv[]) {
 	
+	long nonceOne = 45;
+	std::string aKey = "AEDCBA9876543210";
+	std::string sessionKey = "FEDCBA9876543210";
 
-    std::cout << "----Client 'A' Setup----" << endl;
+    // std::cout << "----Client 'A' Setup----" << endl;
 	
-	std::cout << "Enter a nonce: ";
-	std::cin >> nonceOne;
+	// std::cout << "Enter a nonce: ";
+	// std::cin >> nonceOne;
 	
-	std::cout << "Enter client private key for 'A': ";
-	std::cin >> aKey;
+	// std::cout << "Enter client private key for 'A': ";
+	// std::cin >> aKey;
 	
-	std::cout << "Press [1] for file transfer and [2] for sentence tranfer: ";
-	std::cin >> option;
+	//std::cout << "Press [1] for file transfer and [2] for sentence tranfer: ";
+	//std::cin >> option;
 	
 	
     char buffer[256];
@@ -118,23 +118,23 @@ int main(int argc, char*argv[]) {
     //starts process by asking kdc for session key by sending a nonce and a request
 	
 			std::stringstream ss; 
-		//std::string request;
+		std::string request;
 		{
 			cereal::JSONOutputArchive oarchive(ss);
 			MyData mydata;
 			mydata.nonceOne = nonceOne;	
 			mydata.request = "Ks for IDb";
-			//request = mydata.request;
+			request = mydata.request;
 			oarchive(mydata);
 		}
 		
 		//print part 1
 		
-		// std::cout << endl;
-		// std::cout << "Sent (KDC):" << endl;
-		// std::cout << "Request: " << request << endl;
-		// std::cout << "N1 = " << nonceOne << endl;
-		// std::cout << endl;
+		std::cout << endl;
+		std::cout << "Sent (KDC):" << endl;
+		std::cout << "Request: " << request << endl;
+		std::cout << "N1 = " << nonceOne << endl;
+		std::cout << endl;
 		
 		const char* input = ss.str().c_str();
 		//size_t t = sizeof(input);
@@ -185,11 +185,11 @@ int main(int argc, char*argv[]) {
 			
 			//print part 4
 			
-			// std::cout << endl;
-			// std::cout << "Recd from KDC:" << endl;
-			// std::cout << "Ks: " << sessionKey << endl;
-			// std::cout << "N1: " << nonceOne << endl;
-			// std::cout << endl;
+			std::cout << endl;
+			std::cout << "Recd from KDC:" << endl;
+			std::cout << "Ks: " << sessionKey << endl;
+			std::cout << "N1: " << nonceOne << endl;
+			std::cout << endl;
 			
 			
 			
@@ -245,10 +245,10 @@ int main(int argc, char*argv[]) {
 		
 	//print part 5
 	
-	// std::cout << endl;
-	// std::cout << "Send to ID_B:" << endl;
-	// std::cout << "EKb[Ks,IDA]: " << keyers2 << endl;
-	// std::cout << endl;
+	std::cout << endl;
+	std::cout << "Send to ID_B:" << endl;
+	std::cout << "EKb[Ks,IDA]: " << keyers2 << endl;
+	std::cout << endl;
 	
 		
 		
@@ -320,12 +320,12 @@ int main(int argc, char*argv[]) {
 	
 	//print part 9
 	
-	// std::cout << endl;
-	// std::cout << "Recd from ID_A:" << endl;
-	// std::cout << "EKs[N2]: " << newkey << endl;
-	// std::cout << "N2: " << noncetwo << endl;
-	// std::cout << "f(N2): " << fnonce << endl;
-	// std::cout << endl;
+	std::cout << endl;
+	std::cout << "Recd from ID_A:" << endl;
+	std::cout << "EKs[N2]: " << newkey << endl;
+	std::cout << "N2: " << noncetwo << endl;
+	std::cout << "f(N2): " << fnonce << endl;
+	std::cout << endl;
 	
 	std::string inputN;
 
@@ -347,10 +347,10 @@ int main(int argc, char*argv[]) {
 			
 			//print part 9
 			
-			// std::cout << endl;
-			// std::cout << "Send to ID_B:" << endl;
-			// std::cout << "EKs[f(N2)]: " << inputN << endl;
-			// std::cout << endl;
+			std::cout << endl;
+			std::cout << "Send to ID_B:" << endl;
+			std::cout << "EKs[f(N2)]: " << inputN << endl;
+			std::cout << endl;
 			
 			std::stringstream zx;
 				{
@@ -397,11 +397,21 @@ int main(int argc, char*argv[]) {
 		close(sockfb);
 	}
 	
+	std::cout << endl;	
+	
     //print out hex of string
 	std::cout << "S converted to hex: " << md5(testString) << endl; 
 	
+	std::cout << endl;	
+	
 	string encryptedHex = b.Encrypt_CBC(testString);
 	
+	//print out encrypted string that was done with Ks
+	std::cout << "Encrypted (EKs[S]) : " << encryptedHex << endl; 
+	
+	std::cout << endl;		
+	
+	std::cout << "Send EKs[S] → IDB" << endl;
 	
 	//encrypt and serialize then send over to 'B'
 
