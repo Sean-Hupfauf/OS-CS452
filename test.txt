@@ -1,0 +1,11 @@
+txt2html/HTML::TextToHTML Sample Conversion
+
+This sample is based hugely on the original sample.txt produced
+by Seth Golub for txt2html.
+This sample is based hugely on the original sample.txt produced
+by Seth Golub for txt2html.
+This sample is based hugely on the original sample.txt produced
+by Seth Golub for txt2html.
+This sample is based hugely on the original sample.txt produced
+by Seth Golub for txt2html.
+This sample is based hugely
