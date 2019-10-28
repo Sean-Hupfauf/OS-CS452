@@ -168,6 +168,8 @@ int main (int argc, char *argv[]) {
 			keyers=myblow.encryptedString;
 			} 
 			
+			
+			
 			//-----------------------------------------------------
 			//Decypted and exposed the Ks, Request, Nonce, and encryptedString for
 			//B's encrypted data containing Ks and IDa
@@ -181,15 +183,25 @@ int main (int argc, char *argv[]) {
 			//Decypted and exposed B's encrypted data containing Ks and IDa
 			//Now it gets deserilized below
 			
+			std::string id_a;
 			{
 				
 			cereal::JSONInputArchive iarchive(sq);	
 			MyTwoB mytwoB;
 			iarchive(mytwoB);
 			sessionKey = mytwoB.sessionKey;
-			std::cout << mytwoB.IDa << std::endl << mytwoB.sessionKey << std::endl;;
+			id_a = mytwoB.IDa;
 			
 			} 
+			
+			//print step 7
+			
+			std::cout << endl;
+	        std::cout << "Recd from ID_A: " << endl;
+			std::cout << "EKb[Ks,IDA]: " << keyers << endl;
+			std::cout << "Ks: " << sessionKey << endl;
+			std::cout << "ID_A: " << id_a << endl;
+			std::cout << endl;	
 			
 			
 			
@@ -213,6 +225,17 @@ int main (int argc, char *argv[]) {
 			
 			//-----------------------------------------------------
 			//Then it seralizes the complete encrypted payload that is going to A and writes it to A.
+			
+			//print part 8
+			
+			// std::cout << endl;
+	        // std::cout << "Sent to ID_A: " << endl;
+	        // std::cout << "N2: " << nonceTwo << endl;
+			// std::cout << "EKs[N2]: " << inputM << endl;
+			// std::cout << endl;	
+			
+			
+			
 			
 			std::stringstream we;
 				{
@@ -266,10 +289,18 @@ int main (int argc, char *argv[]) {
 			iarchive(mydata5);
 			fnonce5=mydata5.fnoncer;
 			} 
-			std::cout << fnonce5 << std::endl;
 			
 			nonceTwo = f(nonceTwo);
-			std::cout << nonceTwo << std::endl;
+			
+			
+			//print step 11
+			
+			std::cout << endl;
+	        std::cout << "Recd from ID_A: " << endl;
+	        std::cout << "EKs[f(N2)]: " << newkey << endl;
+			std::cout << "f(N2): " << nonceTwo << endl;
+			std::cout << "N2: " << fnonce5 << endl;
+			std::cout << endl;	
 			
 			
 			//the good stuff happens: begin transfer
@@ -308,7 +339,6 @@ int main (int argc, char *argv[]) {
 			read(newsockfb, encryptedTestStringBuffer, 1000);
 			
 			string encryptedTestString(encryptedTestStringBuffer);
-			std::cout << endl << encryptedTestString  << endl;
 			encryptedTest << encryptedTestString;
 			
 			

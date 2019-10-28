@@ -132,20 +132,28 @@ char buffer[256];
 	//-----------------------------------------------------
 	//Reads in the request and nonce, copies both.
 	
-			char buf[256];
-			read(newsockfd, buf, 255);
-			std::cout << buf << std::endl;
-			std::stringstream ss;
-			string str(buf);
-			ss << str;
-			{
-			cereal::JSONInputArchive iarchive(ss);	
-			MyData mydata;
-			iarchive(mydata);
+	char buf[256];
+	read(newsockfd, buf, 255);
+	std::stringstream ss;
+	string str(buf);
+	ss << str;
+	{
+	cereal::JSONInputArchive iarchive(ss);	
+	MyData mydata;
+	iarchive(mydata);
 
-			nonceOne = mydata.nonceOne;
-			request = mydata.request;
-			}
+	nonceOne = mydata.nonceOne;
+	request = mydata.request;
+	}
+			
+	//print out step 2
+    std::cout << endl;
+    std::cout << "Recd from ID_A:" << endl;
+    std::cout << "Requesting: " << request << endl;
+    std::cout << "N1 recieved: " << nonceOne << endl;
+    std::cout << endl;
+
+     	
 			
 	
 	std::string inputM;
@@ -195,6 +203,17 @@ char buffer[256];
 	
 	//-----------------------------------------------------
 	//Then it seralizes the complete encrypted payload that is going to A and writes it to A.
+	
+	//print out step 3
+	
+	std::cout << endl;
+    std::cout << "Send to ID_A:" << endl;
+    std::cout << "EKa[Ks||Req||N1||EKb(Ks,IDA)]: " << inputM << request << endl;
+    std::cout << "Ks: " << sessionKey << endl;
+    std::cout << "N1: " << nonceOne << endl;
+    std::cout << endl;
+	
+	
 	
 	std::stringstream sr;
 		{

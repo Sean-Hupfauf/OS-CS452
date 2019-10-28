@@ -115,22 +115,26 @@ int main(int argc, char*argv[]) {
 		error("ERROR connecting");
 	}
 	//-----------------------------------------------------
-	
-       
-		  
-		  
-        
-	//-----------------------------------------------------
+    //starts process by asking kdc for session key by sending a nonce and a request
 	
 			std::stringstream ss; 
+		//std::string request;
 		{
 			cereal::JSONOutputArchive oarchive(ss);
 			MyData mydata;
 			mydata.nonceOne = nonceOne;	
-			mydata.request = "Request: Ks for IDb";
-			
+			mydata.request = "Ks for IDb";
+			//request = mydata.request;
 			oarchive(mydata);
 		}
+		
+		//print part 1
+		
+		// std::cout << endl;
+		// std::cout << "Sent (KDC):" << endl;
+		// std::cout << "Request: " << request << endl;
+		// std::cout << "N1 = " << nonceOne << endl;
+		// std::cout << endl;
 		
 		const char* input = ss.str().c_str();
 		//size_t t = sizeof(input);
@@ -164,9 +168,12 @@ int main(int argc, char*argv[]) {
 			
 			std::string varTwo = bf.Decrypt_CBC(keyers); //decrypt with 'a's key
 			
+			
+			
+			
 			std::stringstream st;
 			st << varTwo;
-			std::cout << "Serialized Message: " << varTwo << std::endl;
+			
 			{
 			cereal::JSONInputArchive iarchive(st);	
 			MyTwo mytwo;
@@ -174,6 +181,15 @@ int main(int argc, char*argv[]) {
 			sessionKey = mytwo.sessionKey;
 			keyers2=mytwo.encryptedString;
 			} 
+			
+			
+			//print part 4
+			
+			// std::cout << endl;
+			// std::cout << "Recd from KDC:" << endl;
+			// std::cout << "Ks: " << sessionKey << endl;
+			// std::cout << "N1: " << nonceOne << endl;
+			// std::cout << endl;
 			
 			
 			
@@ -227,6 +243,15 @@ int main(int argc, char*argv[]) {
 			oarchive(myblow);
 		}
 		
+	//print part 5
+	
+	// std::cout << endl;
+	// std::cout << "Send to ID_B:" << endl;
+	// std::cout << "EKb[Ks,IDA]: " << keyers2 << endl;
+	// std::cout << endl;
+	
+		
+		
 		std::string nextx = rs.str();
 		//std::cout << nextx << std::endl;
 		//size_t t = sizeof(nextx);
@@ -250,7 +275,7 @@ int main(int argc, char*argv[]) {
 	MyBlow myblow;
 	iarchive(myblow);
 	newkey=myblow.encryptedString;
-	//std::cout << newkey << std::endl;
+
 	} 
 	
 	//-----------------------------------------------------
@@ -263,14 +288,17 @@ int main(int argc, char*argv[]) {
 	
 	std::stringstream qw;
 	qw << varNew;
-	//std::cout << varNew << std::endl;
+
 	{
 	cereal::JSONInputArchive iarchive(qw);	
 	MyClass mydata2;
 	iarchive(mydata2);
 	noncetwo=mydata2.nonceOne;
 	} 
-	std::cout << noncetwo << std::endl;
+	
+	
+	
+
 	
 	//---------------------------------------------------------====
 	//long fnonce = f(noncetwo);
@@ -290,9 +318,17 @@ int main(int argc, char*argv[]) {
 		state = t + M;
 	long fnonce=(long)((((double) state/M)* noncetwo)+(M/noncetwo));
 	
+	//print part 9
+	
+	// std::cout << endl;
+	// std::cout << "Recd from ID_A:" << endl;
+	// std::cout << "EKs[N2]: " << newkey << endl;
+	// std::cout << "N2: " << noncetwo << endl;
+	// std::cout << "f(N2): " << fnonce << endl;
+	// std::cout << endl;
 	
 	std::string inputN;
-	std::cout << fnonce << std::endl;
+
 	std::stringstream as; 
 			{
 				cereal::JSONOutputArchive oarchive(as);
@@ -308,6 +344,13 @@ int main(int argc, char*argv[]) {
 			
 			//-----------------------------------------------------
 			//Then it seralizes the complete encrypted payload that is going to A and writes it to A.
+			
+			//print part 9
+			
+			// std::cout << endl;
+			// std::cout << "Send to ID_B:" << endl;
+			// std::cout << "EKs[f(N2)]: " << inputN << endl;
+			// std::cout << endl;
 			
 			std::stringstream zx;
 				{
