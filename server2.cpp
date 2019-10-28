@@ -24,6 +24,7 @@
 
 #define PORT 9518
 #define MAXVALUE 11500
+#define bytesRead 1024
 
 typedef MyClass MyData;
 typedef PartTwo MyTwo;
@@ -59,7 +60,7 @@ long f(long nonce) {
 //-----------------------------------------------------
 
 int main (int argc, char *argv[]) {
-	
+	int option;
 	long nonceTwo = 54;
 	std::string bKey = "BEDCBA9876543210";
 	std::string sessionKey = "FEDCBA9876543210";
@@ -203,7 +204,7 @@ int main (int argc, char *argv[]) {
 			std::cout << "N2: " << nonceTwo << endl;
 			std::cout << endl;	
 			
-			
+		
 			
 			std::string inputM;
         
@@ -269,6 +270,7 @@ int main (int argc, char *argv[]) {
 			MyBlow myblow5;
 			iarchive(myblow5);
 			newkey=myblow5.encryptedString;
+			option=myblow5.choice;
 			//std::cout << newkey << std::endl;
 			} 
 			
@@ -329,7 +331,7 @@ int main (int argc, char *argv[]) {
 			
 			
 			
-			
+			if(option == 1) {
 			//read in encrypted string
 			std::stringstream encryptedTest; 
 			
@@ -366,6 +368,45 @@ int main (int argc, char *argv[]) {
 			std::cout << endl;	
 			
 			std::cout << "Print S: " << decryptedTestString << endl; 
+			}else{
+				std::cout << "Receive EKs[S]" << endl; 
+				
+				int numR, remain;
+				read(newsockfb, &numR, 4);
+				read(newsockfb, &remain, 4);
+				//std::cout << numR;
+				int i;
+				char red[bytesRead];
+				char rRed[remain];
+				ofstream outFile;
+				outFile.open("copie.txt");
+				//BLOWFISH bf("FEDCBA9876543210");
+				
+				for ( i = 0; i < numR; i++) {
+					
+					read(newsockfb, red, bytesRead);
+					string str(red);
+					//std::cout << red << endl;
+				//	std:: cout << str.length()<< " " << i << endl;
+					/*string decryptedString = bf.Decrypt_CBC(str);
+					strcpy(cRed, decryptedString.c_str());*/
+					outFile.write(red,bytesRead);
+					memset(red, 0, bytesRead);
+				}
+				
+					read(newsockfb, &rRed, remain);
+					string str(rRed);
+				//	std::cout << rRed << endl;
+					/*string decryptedString = bf.Decrypt_CBC(str);
+					strcpy(cRed, decryptedString.c_str());*/
+					outFile.write(rRed,remain);
+					memset(rRed, 0, remain);
+				
+				
+				outFile.close();
+			
+			}
+			
 			
 			
 	close(newsockfb);

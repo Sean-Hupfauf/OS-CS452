@@ -20,7 +20,7 @@
 #include "cereal/archives/binary.hpp"
 #include "cereal/archives/json.hpp"
 
-#define PORT 9525
+#define PORT 9556
 #define MAXVALUE 11500
 
 typedef MyClass MyData;
@@ -230,6 +230,9 @@ char buffer[256];
 		write(newsockfd, nextx.c_str(), 1000);
 		
 	//-----------------------------------------------------
+	
+	
+	
 	
 	
 	close(newsockfd);

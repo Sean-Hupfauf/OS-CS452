@@ -22,8 +22,9 @@
 #include "cereal/archives/binary.hpp"
 #include "cereal/archives/json.hpp"
 
-#define PORT 9525
+#define PORT 9556
 #define MAXVALUE 11500
+#define bytesRead 1024
 
 typedef MyClass MyData;
 typedef PartTwo MyTwo;
@@ -33,7 +34,7 @@ typedef PartTwoB MyTwoB;
 using namespace std;
 
 
-//int option;
+
 
 void error(const char *msg) {
 	perror(msg);
@@ -69,7 +70,7 @@ int main(int argc, char*argv[]) {
 	long nonceOne = 45;
 	std::string aKey = "AEDCBA9876543210";
 	std::string sessionKey = "FEDCBA9876543210";
-
+	int option = 0;
     // std::cout << "----Client 'A' Setup----" << endl;
 	
 	// std::cout << "Enter a nonce: ";
@@ -78,8 +79,8 @@ int main(int argc, char*argv[]) {
 	// std::cout << "Enter client private key for 'A': ";
 	// std::cin >> aKey;
 	
-	//std::cout << "Press [1] for file transfer and [2] for sentence tranfer: ";
-	//std::cin >> option;
+	std::cout << "Press [0] for file transfer and [1] for sentence tranfer: ";
+	std::cin >> option;
 	
 	
     char buffer[256];
@@ -357,6 +358,7 @@ int main(int argc, char*argv[]) {
 					cereal::JSONOutputArchive oarchive(zx);
 					MyBlow myblow5;
 					myblow5.encryptedString = inputN;	
+					myblow5.choice = option;
 					
 					oarchive(myblow5);
 				}
@@ -386,47 +388,116 @@ int main(int argc, char*argv[]) {
 	} 
 	
 	string secure = b.Decrypt_CBC(secureEncrypted);
-	
 	string testString;
-	if(secure == "yes") {
-		std::cout << "Enter string S (any length): ";
-		std::cin >> testString;
+	
+	if(option == 1) {
 		
-	} else {
-		std::cout << "Connection not secure" << endl;
-		close(sockfb);
-	}
-	
-	std::cout << endl;	
-	
-    //print out hex of string
-	std::cout << "S converted to hex: " << md5(testString) << endl; 
-	
-	std::cout << endl;	
-	
-	string encryptedHex = b.Encrypt_CBC(testString);
-	
-	//print out encrypted string that was done with Ks
-	std::cout << "Encrypted (EKs[S]) : " << encryptedHex << endl; 
-	
-	std::cout << endl;		
-	
-	std::cout << "Send EKs[S] → IDB" << endl;
-	
-	//encrypt and serialize then send over to 'B'
+		if(secure == "yes") {
+			std::cout << "Enter string S (any length): ";
+			std::cin >> testString;
+			
+		} else {
+			std::cout << "Connection not secure" << endl;
+			close(sockfb);
+		}
+		
+		std::cout << endl;	
+		
+		//print out hex of string
+		std::cout << "S converted to hex: " << md5(testString) << endl; 
+		
+		std::cout << endl;	
+		
+		string encryptedHex = b.Encrypt_CBC(testString);
+		
+		//print out encrypted string that was done with Ks
+		std::cout << "Encrypted (EKs[S]) : " << encryptedHex << endl; 
+		
+		std::cout << endl;		
+		
+		std::cout << "Send EKs[S] → IDB" << endl;
+		
+		//encrypt and serialize then send over to 'B'
 
-	std::stringstream encryptedHexReturnToB;
-	
-	{
-	cereal::JSONOutputArchive oarchive(encryptedHexReturnToB);
-	blowfisher blow;
-	blow.encryptedString = encryptedHex;	
-	
-	oarchive(blow);
+		std::stringstream encryptedHexReturnToB;
+		
+		{
+		cereal::JSONOutputArchive oarchive(encryptedHexReturnToB);
+		blowfisher blow;
+		blow.encryptedString = encryptedHex;	
+		
+		oarchive(blow);
+		}
+		string a = encryptedHexReturnToB.str();
+		
+		write(sockfb, a.c_str(), 1000);
+	}else {
+		
+		
+		if(secure == "yes") {
+			std::cout << "Enter File S (any size): ";
+			std::cin >> testString;
+			
+		} else {
+			std::cout << "Connection not secure" << endl;
+			close(sockfb);
+		}
+		
+		char x[bytesRead];
+		char y[bytesRead];
+		ifstream inFile;
+		ofstream outFile;
+		
+		inFile.open(testString);
+		if (!inFile) {
+			cout << "Unable to open file";
+			exit(1); // terminate with error
+		}
+		outFile.open("copi.txt");
+		inFile.seekg(0, std::ios::end);
+		size_t z = inFile.tellg();
+		//std::cout << z%bytesRead;
+		inFile.seekg(0, std::ios::beg);
+		
+		int numRotations = z/bytesRead;
+		int remainder = z%bytesRead;
+		//std::cout << numRotations << endl;
+		int convRot = htonl(numRotations);
+		write(sockfb, &numRotations, 4);
+		write(sockfb, &remainder, 4);
+		int i = 0;
+		while (inFile.peek() != EOF && z >=0) {
+			//std::cout << i++ <<endl;
+			if(z > bytesRead) {
+			inFile.read(x, bytesRead);
+			z-= bytesRead;
+			write (sockfb, x, bytesRead);
+			
+			memset(x, 0, bytesRead);
+			memset(y, 0, bytesRead);
+			}
+			else {
+			inFile.read(x, z);
+			write (sockfb, x, z);
+			string str(x);
+			string encryptedString = bf.Encrypt_CBC(str);
+			//std::cout << encryptedString << endl << "... " << encryptedString.length() << endl;
+			string decryptedString = bf.Decrypt_CBC(encryptedString);
+			strcpy(y, decryptedString.c_str());
+			outFile.write(x,z);
+			//std::cout << str << endl << "... " << str.length() << endl;
+			z-= bytesRead;
+			}
+		}
+		std::cout << "Send EKs[S] → IDB" << endl;
+		inFile.close();
+		outFile.close();
+		
+		
 	}
-	string a = encryptedHexReturnToB.str();
 	
-	write(sockfb, a.c_str(), 1000);
+	//=========================================
+	
 	
 	close(sockfb);
 	
