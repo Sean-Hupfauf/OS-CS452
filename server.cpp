@@ -7,6 +7,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <fstream>
 #include <iostream>
 #include <bitset>
 #include <math.h>
@@ -16,6 +17,8 @@
 #include "PartTwoB.hpp"
 #include "blowfisher.hpp"
 #include "blowfish.h"
+#include <vector>
+#include "files.hpp"
 #include "cereal/archives/binary.hpp"
 #include "cereal/archives/json.hpp"
 
@@ -26,6 +29,7 @@ typedef MyClass MyData;
 typedef PartTwo MyTwo;
 typedef PartTwoB MyTwoB;
 typedef blowfisher MyBlow;
+typedef files MyFile;
 
 using namespace std;
 
@@ -105,34 +109,39 @@ char buffer[256];
 	}
 	
 	int nonceOne;
-	std::string request;
-	
+	std::string efile;
+	BLOWFISH bf("FEDCBA9876543210");
 	//-----------------------------------------------------
 	//Reads in the request and nonce, copies both.
 	
-			char buf[256];
-			read(newsockfd, buf, 255);
-			std::cout << buf << std::endl;
+			char buf[1000];
+			read(newsockfd, buf, 1000);
+			//std::cout << buf << std::endl;
 			std::stringstream ss;
 			string str(buf);
 			ss << str;
 			{
 			cereal::JSONInputArchive iarchive(ss);	
-			MyData mydata;
-			iarchive(mydata);
-
-			nonceOne = mydata.nonceOne;
-			request = mydata.request;
+			//std::cout << ss << std::endl;
+			MyFile myfile;
+			iarchive(myfile);
+			std::cout << myfile.x << std::endl;
+			efile = myfile.x;
+			//request = mydata.request;
 			}
+			std::string newfile = bf.Decrypt_CBC(efile);
+			std::cout << newfile << std::endl;
 			
-	
-	std::string inputM;
-	std::string inputBefore;
+			std::ofstream out("output.txt");
+			out << newfile;
+			out.close();
+	//std::string inputM;
+	//std::string inputBefore;
 	
 	//-----------------------------------------------------
 	//First it creates the payload going to b, seralizes it, and encrypts it
 	
-	std::stringstream sf;
+	/* std::stringstream sf;
 
 		{
 			cereal::JSONOutputArchive oarchive(sf);
@@ -146,14 +155,14 @@ char buffer[256];
 		const char* inputB = sf.str().c_str();
 		BLOWFISH bf("FEDCBA9876543210");
 		BLOWFISH b("AEDCBA9876543210");
-		inputBefore = bf.Encrypt_CBC(inputB);
+		inputBefore = bf.Encrypt_CBC(inputB); */
 	
 	
 	//===============================================
 	//Then it combines the encrypted string b payload with the stuff going with it in part two
 	//Serializes it and then encrypts it again.
 	
-	
+	/* 
 	std::stringstream st;
 
 		{
@@ -168,13 +177,13 @@ char buffer[256];
 			oarchive(mytwo);
 		}
 		const char* input = st.str().c_str();
-		inputM = b.Encrypt_CBC(input);
+		inputM = b.Encrypt_CBC(input); */
 	
 	
 	//-----------------------------------------------------
 	//Then it seralizes the complete encrypted payload that is going to A and writes it to A.
 	
-	std::stringstream sr;
+	/* std::stringstream sr;
 		{
 			cereal::JSONOutputArchive oarchive(sr);
 			MyBlow myblow;
@@ -187,7 +196,7 @@ char buffer[256];
 		
 		//size_t t = sizeof(nextx);
 		write(newsockfd, nextx.c_str(), 1000);
-		
+		 */
 	//-----------------------------------------------------
 	
 	

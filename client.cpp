@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
+#include <fstream>
+#include <string>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -16,6 +18,8 @@
 #include "MyClass.hpp"
 #include "PartTwo.hpp"
 #include "PartTwoB.hpp"
+#include <vector>
+#include "files.hpp"
 #include "cereal/archives/binary.hpp"
 #include "cereal/archives/json.hpp"
 
@@ -26,6 +30,7 @@ typedef MyClass MyData;
 typedef PartTwo MyTwo;
 typedef blowfisher MyBlow;
 typedef PartTwoB MyTwoB;
+typedef files MyFile;
 
 using namespace std;
 
@@ -59,7 +64,7 @@ int randomNumber() {
 //-----------------------------------------------------
 
 int main(int argc, char*argv[]) {
-char buffer[256];
+//char buffer[256];
 	/*
 	============================
 	SET UP CONNECTION
@@ -94,29 +99,46 @@ char buffer[256];
 	//-----------------------------------------------------
 	
        
-		  
-		int nonce1 = randomNumber();  
-		  
-        
+		// std::ifstream file("test.txt", std::ios::binary | std::ios::ate);
+	// std::streamsize size = file.tellg();
+	// file.seekg(0, std::ios::beg);
+
+	// std::vector<char> buffer(size);
+	// if (file.read(buffer.data(), size))
+	// {
+		// /* worked! */
+	// } 
+        std::string einputs;
+		std::ifstream ifs("test.txt");
+  std::string content( (std::istreambuf_iterator<char>(ifs) ),
+                       (std::istreambuf_iterator<char>()    ) );
+		
 	//-----------------------------------------------------
-	
+	//std::cout << content << std::endl;
+	BLOWFISH bf("FEDCBA9876543210");
+
+	einputs = bf.Encrypt_CBC(content); 
+	//std::cout << einputs << std::endl;
+		
 			std::stringstream ss; 
 		{
 			cereal::JSONOutputArchive oarchive(ss);
-			MyData mydata;
-			mydata.nonceOne = nonce1;	
-			mydata.request = "Request: Ks for IDb";
-			
-			oarchive(mydata);
+			MyFile myfile;
+			myfile.x = einputs;	
+			//mydata.request = "Request: Ks for IDb";
+			//std::cout << myfile.x << std::endl;
+			oarchive(myfile);
 		}
 		
-		const char* input = ss.str().c_str();
-		//size_t t = sizeof(input);
-		write(sockfd, input, 255);
+		std::string input = ss.str();
+		//std::cout << input << std::endl;
+		size_t t = sizeof(input);
+		//std::cout << t << std::endl;
+		write(sockfd, input.c_str(), 1000);
 	
 	
 	//-----------------------------------------------------
-	std::string keyers;
+	/* std::string keyers;
 	std::string keyers2;
 	BLOWFISH bf("FEDCBA9876543210");
 	BLOWFISH b("AEDCBA9876543210");
@@ -136,12 +158,12 @@ char buffer[256];
 			iarchive(myblow);
 			keyers=myblow.encryptedString;
 			} 
-			
+			 */
 			//-----------------------------------------------------
 			//Got the big chunk in part, deserilize and get the encryptedString
 			//with everything in it.
 			
-			std::string varTwo = bf.Decrypt_CBC(keyers);
+			/* std::string varTwo = bf.Decrypt_CBC(keyers);
 			
 			std::stringstream st;
 			st << varTwo;
@@ -151,7 +173,7 @@ char buffer[256];
 			MyTwo mytwo;
 			iarchive(mytwo);
 			keyers2=mytwo.encryptedString;
-			} 
+			}  */
 			
 			
 			
@@ -159,146 +181,146 @@ char buffer[256];
 		
 	close(sockfd);
 	//#define PORT 9538
-	int sockfb, m;
-	struct sockaddr_in serv_addr2;
-	struct hostent *server2;
-/* 
-	if (argc < 2) {
-		fprintf(stderr, "usage is %s hostname\n", argv[0]);
-		exit(0);
-	}
-*/
+	// int sockfb, m;
+	// struct sockaddr_in serv_addr2;
+	// struct hostent *server2;
+// /* 
+	// if (argc < 2) {
+		// fprintf(stderr, "usage is %s hostname\n", argv[0]);
+		// exit(0);
+	// }
+// */
 	
-	sockfb = socket(AF_INET, SOCK_STREAM, 0);
-	if (sockfb < 0) error("ERROR opening socket");
-		server2 = gethostbyname(argv[2]);
-	 if (server2 == NULL) {
-		fprintf(stderr, "ERROR, no such host\n");
-		exit(0);
-	 } 
+	// sockfb = socket(AF_INET, SOCK_STREAM, 0);
+	// if (sockfb < 0) error("ERROR opening socket");
+		// server2 = gethostbyname(argv[2]);
+	 // if (server2 == NULL) {
+		// fprintf(stderr, "ERROR, no such host\n");
+		// exit(0);
+	 // } 
 
-	bzero((char *) &serv_addr2, sizeof(serv_addr2));
-	serv_addr2.sin_family = AF_INET;
-	bcopy((char *)server2->h_addr,
-		(char *)&serv_addr2.sin_addr.s_addr,
-		server2->h_length);
-	serv_addr2.sin_port = htons(9518);
+	// bzero((char *) &serv_addr2, sizeof(serv_addr2));
+	// serv_addr2.sin_family = AF_INET;
+	// bcopy((char *)server2->h_addr,
+		// (char *)&serv_addr2.sin_addr.s_addr,
+		// server2->h_length);
+	// serv_addr2.sin_port = htons(9518);
 	 
-	if (connect(sockfb, (struct sockaddr *) &serv_addr2, sizeof(serv_addr2)) < 0) {
-		error("ERROR connecting");
-	}
+	// if (connect(sockfb, (struct sockaddr *) &serv_addr2, sizeof(serv_addr2)) < 0) {
+		// error("ERROR connecting");
+	// }
 	 
 	 
 	//-----------------------------------------------------
 	//Then it seralizes the complete encrypted payload that is going to B and writes it to B.
-	std::string newkey;
-	std::stringstream rs;
-		{
-			cereal::JSONOutputArchive oarchive(rs);
-			MyBlow myblow;
-			myblow.encryptedString = keyers2;	
+	// std::string newkey;
+	// std::stringstream rs;
+		// {
+			// cereal::JSONOutputArchive oarchive(rs);
+			// MyBlow myblow;
+			// myblow.encryptedString = keyers2;	
 			
-			oarchive(myblow);
-		}
+			// oarchive(myblow);
+		// }
 		
-		std::string nextx = rs.str();
+		// std::string nextx = rs.str();
 		//std::cout << nextx << std::endl;
 		//size_t t = sizeof(nextx);
-		write(sockfb, nextx.c_str(), 1000);
+		// write(sockfb, nextx.c_str(), 1000);
 	
 	
 	//-----------------------------------------------------
 	//Part 4 gets the serialized encrypted nonce and deserilize it
 	
-	std::stringstream er; 
-	char bufe[1000];
+	// std::stringstream er; 
+	// char bufe[1000];
 	
-	read(sockfb, bufe, 1000);
+	// read(sockfb, bufe, 1000);
 	
-	string stri(bufe);
+	// string stri(bufe);
 	
-	er << stri;
+	// er << stri;
 	
-	{
-	cereal::JSONInputArchive iarchive(er);	
-	MyBlow myblow;
-	iarchive(myblow);
-	newkey=myblow.encryptedString;
+	// {
+	// cereal::JSONInputArchive iarchive(er);	
+	// MyBlow myblow;
+	// iarchive(myblow);
+	// newkey=myblow.encryptedString;
 	//std::cout << newkey << std::endl;
-	} 
+	// } 
 	
 	//-----------------------------------------------------
 	//Decrypt it and deserilize it again to expose the nonce
 	
-	int noncetwo;
+	// int noncetwo;
 	
 	
-	std::string varNew = bf.Decrypt_CBC(newkey);
+	// std::string varNew = bf.Decrypt_CBC(newkey);
 	
-	std::stringstream qw;
-	qw << varNew;
+	// std::stringstream qw;
+	// qw << varNew;
 	//std::cout << varNew << std::endl;
-	{
-	cereal::JSONInputArchive iarchive(qw);	
-	MyClass mydata2;
-	iarchive(mydata2);
-	noncetwo=mydata2.nonceOne;
-	} 
-	std::cout << noncetwo << std::endl;
+	// {
+	// cereal::JSONInputArchive iarchive(qw);	
+	// MyClass mydata2;
+	// iarchive(mydata2);
+	// noncetwo=mydata2.nonceOne;
+	// } 
+	// std::cout << noncetwo << std::endl;
 	
 	//---------------------------------------------------------====
 	//long fnonce = f(noncetwo);
 	
-	const long A = 48271;
-    const long M = 2147483647;
-    const long Q = M/A;
-    const long R = M%A;
+	// const long A = 48271;
+    // const long M = 2147483647;
+    // const long Q = M/A;
+    // const long R = M%A;
 
-	static long state = 65;
-	long t = A * (state % Q) - R * (state / Q);
+	// static long state = 65;
+	// long t = A * (state % Q) - R * (state / Q);
 	
 	
-	if (t > 0)
-		state = t;
-	else
-		state = t + M;
-	long fnonce=(long)((((double) state/M)* noncetwo)+(M/noncetwo));
+	// if (t > 0)
+		// state = t;
+	// else
+		// state = t + M;
+	// long fnonce=(long)((((double) state/M)* noncetwo)+(M/noncetwo));
 	
 	
-	std::string inputN;
-	std::cout << fnonce << std::endl;
-	std::stringstream as; 
-			{
-				cereal::JSONOutputArchive oarchive(as);
-				MyData mydata5;
-				mydata5.fnoncer = fnonce;	
+	// std::string inputN;
+	// std::cout << fnonce << std::endl;
+	// std::stringstream as; 
+			// {
+				// cereal::JSONOutputArchive oarchive(as);
+				// MyData mydata5;
+				// mydata5.fnoncer = fnonce;	
 				
-				oarchive(mydata5);
-			}
+				// oarchive(mydata5);
+			// }
 			
-			const char* input5 = as.str().c_str();
+			// const char* input5 = as.str().c_str();
 
-			inputN = b.Encrypt_CBC(input5);
+			// inputN = b.Encrypt_CBC(input5);
 			
 			//-----------------------------------------------------
 			//Then it seralizes the complete encrypted payload that is going to A and writes it to A.
 			
-			std::stringstream zx;
-				{
-					cereal::JSONOutputArchive oarchive(zx);
-					MyBlow myblow5;
-					myblow5.encryptedString = inputN;	
+			// std::stringstream zx;
+				// {
+					// cereal::JSONOutputArchive oarchive(zx);
+					// MyBlow myblow5;
+					// myblow5.encryptedString = inputN;	
 					
-					oarchive(myblow5);
-				}
+					// oarchive(myblow5);
+				// }
 				
-				std::string nexty = zx.str();
+				// std::string nexty = zx.str();
 				
 				
-				write(sockfb, nexty.c_str(), 1000);
+				// write(sockfb, nexty.c_str(), 1000);
 	
 	
-	close(sockfb);
+	// close(sockfb);
 	
 	
 	return 0;
