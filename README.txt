@@ -14,5 +14,5 @@ Run Server2 on thing1:
 Run Client on thing0:
 `./client thing3 thing1`
 
-![Picture of what is happening](https://raw.githubusercontent.com/sean-hupfauf/OS-CS452/master/project.png?sanitize=true&raw=true)
+![Picture of what is happening](https://raw.githubusercontent.com/sean-hupfauf/OS-CS452/master/Project.png?sanitize=true&raw=true)
 
