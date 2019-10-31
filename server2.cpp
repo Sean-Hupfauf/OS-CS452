@@ -371,39 +371,32 @@ int main (int argc, char *argv[]) {
 			}else{
 				std::cout << "Receive EKs[S]" << endl; 
 				
-				int numR, remain;
-				read(newsockfb, &numR, 4);
-				read(newsockfb, &remain, 4);
-				//std::cout << numR;
-				int i;
-				char red[bytesRead];
-				char rRed[remain];
-				ofstream outFile;
-				outFile.open("copie.txt");
-				//BLOWFISH bf("FEDCBA9876543210");
+				string filename = "output.txt";
+				char* fileToReceive=const_cast<char*>(filename.c_str());
 				
-				for ( i = 0; i < numR; i++) {
-					
-					read(newsockfb, red, bytesRead);
-					string str(red);
-					//std::cout << red << endl;
-				//	std:: cout << str.length()<< " " << i << endl;
-					/*string decryptedString = bf.Decrypt_CBC(str);
-					strcpy(cRed, decryptedString.c_str());*/
-					outFile.write(red,bytesRead);
-					memset(red, 0, bytesRead);
-				}
-				
-					read(newsockfb, &rRed, remain);
-					string str(rRed);
-				//	std::cout << rRed << endl;
-					/*string decryptedString = bf.Decrypt_CBC(str);
-					strcpy(cRed, decryptedString.c_str());*/
-					outFile.write(rRed,remain);
-					memset(rRed, 0, remain);
-				
-				
-				outFile.close();
+				int bytesReceived = 0,totalbytesReceived=0;
+				  
+				  char recvBuff[1024];
+				  memset(recvBuff, '0', sizeof(recvBuff));
+				  FILE *fp;
+
+				  fp = fopen(fileToReceive, "wb"); 
+					if(NULL == fp){
+						 perror("Unable to create/write file");
+					   exit(3);
+					}
+				  /* Receive data in chunks of 256 bytes */
+				  bool done = true;
+				  while(done){ 
+					  bytesReceived = recv(newsockfb, recvBuff, 1024,0);
+					  if(bytesReceived>0){
+						totalbytesReceived+=bytesReceived;
+							fflush(stdout);
+						fwrite(recvBuff, 1,bytesReceived,fp);
+					  }
+					  else done = false;
+				  }
+				  cout<<"File Written : "<<totalbytesReceived<<" bytes\n";
 			
 			}
 			
