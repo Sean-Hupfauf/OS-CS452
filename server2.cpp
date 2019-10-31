@@ -66,13 +66,13 @@ int main (int argc, char *argv[]) {
 	std::string sessionKey = "FEDCBA9876543210";
 
 
-    // std::cout << "----Client 'B' Setup----" << endl;
+    std::cout << "----Client 'B' Setup----" << endl;
 	
-	// std::cout << "Enter a nonce: ";
-	// std::cin >> nonceTwo;
+	std::cout << "Enter a nonce: ";
+	std::cin >> nonceTwo;
 	
-	// std::cout << "Enter client private key for 'B': ";
-	// std::cin >> bKey;
+	std::cout << "Enter client private key for 'B': ";
+	std::cin >> bKey;
 	
 	
 	

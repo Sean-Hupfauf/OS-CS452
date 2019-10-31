@@ -48,13 +48,14 @@ int main(int argc, char*argv[]) {
 	std::string aKey = "AEDCBA9876543210";
 	std::string sessionKey = "FEDCBA9876543210";
 	int option = 0;
-    // std::cout << "----Client 'A' Setup----" << endl;
 	
-	// std::cout << "Enter a nonce: ";
-	// std::cin >> nonceOne;
+    std::cout << "----Client 'A' Setup----" << endl;
 	
-	// std::cout << "Enter client private key for 'A': ";
-	// std::cin >> aKey;
+	std::cout << "Enter a nonce: ";
+	std::cin >> nonceOne;
+	
+	std::cout << "Enter client private key for 'A': ";
+	std::cin >> aKey;
 	
 	std::cout << "Press [0] for file transfer and [1] for sentence tranfer: ";
 	std::cin >> option;

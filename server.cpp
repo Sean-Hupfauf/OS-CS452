@@ -48,16 +48,16 @@ char buffer[256];
 	std::string aKey = "AEDCBA9876543210";
 	std::string bKey = "BEDCBA9876543210";
 
-    // std::cout << "----KDC Setup----" << endl;
+    std::cout << "----KDC Setup----" << endl;
 	
-	// std::cout << "Enter session key: ";
-	// std::cin >> sessionKey;
+	std::cout << "Enter session key: ";
+	std::cin >> sessionKey;
 	
-	// std::cout << "Enter client private key for 'A': ";
-	// std::cin >> aKey;
+	std::cout << "Enter client private key for 'A': ";
+	std::cin >> aKey;
 	
-	// std::cout << "Enter client private key for 'B': ";
-	// std::cin >> bKey;
+	std::cout << "Enter client private key for 'B': ";
+	std::cin >> bKey;
 	
 	
 
