@@ -20,7 +20,7 @@
 #include "cereal/archives/binary.hpp"
 #include "cereal/archives/json.hpp"
 
-#define PORT 9556
+#define PORT 9557
 #define MAXVALUE 11500
 
 typedef MyClass MyData;

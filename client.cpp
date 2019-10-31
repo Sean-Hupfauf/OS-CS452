@@ -22,7 +22,7 @@
 #include "cereal/archives/binary.hpp"
 #include "cereal/archives/json.hpp"
 
-#define PORT 9556
+#define PORT 9557
 #define MAXVALUE 11500
 #define bytesRead 1024
 
@@ -197,7 +197,7 @@ int main(int argc, char*argv[]) {
 	bcopy((char *)server2->h_addr,
 		(char *)&serv_addr2.sin_addr.s_addr,
 		server2->h_length);
-	serv_addr2.sin_port = htons(9518);
+	serv_addr2.sin_port = htons(9517);
 	 
 	if (connect(sockfb, (struct sockaddr *) &serv_addr2, sizeof(serv_addr2)) < 0) {
 		error("ERROR connecting");

@@ -22,7 +22,7 @@
 #include "cereal/archives/binary.hpp"
 #include "cereal/archives/json.hpp"
 
-#define PORT 9518
+#define PORT 9517
 #define MAXVALUE 11500
 #define bytesRead 1024
 
