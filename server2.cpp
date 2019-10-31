@@ -11,14 +11,14 @@
 #include <bitset>
 #include <math.h>
 #include <sstream>
-#include "HelperOne.hpp"
-#include "HelperTwo.hpp"
-#include "HelperFour.hpp"
-#include "HelperThree.hpp"
-#include "blowfishOne.h"
-#include "blowfishTwo.h"
-#include "md5.hpp"
-#include "secureConnection.hpp"
+#include "Helpers/HelperOne.hpp"
+#include "Helpers/HelperTwo.hpp"
+#include "Helpers/HelperFour.hpp"
+#include "Helpers/HelperThree.hpp"
+#include "blowfish/blowfishOne.h"
+#include "blowfish/blowfishTwo.h"
+#include "md5/md5.hpp"
+#include "md5/secureConnection.hpp"
 #include "cereal/archives/binary.hpp"
 #include "cereal/archives/json.hpp"
 
