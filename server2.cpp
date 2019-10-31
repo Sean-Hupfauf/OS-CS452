@@ -11,10 +11,10 @@
 #include <bitset>
 #include <math.h>
 #include <sstream>
-#include "MyClass.hpp"
-#include "PartTwo.hpp"
-#include "PartTwoB.hpp"
-#include "blowfisher.hpp"
+#include "HelperOne.hpp"
+#include "HelperTwo.hpp"
+#include "HelperFour.hpp"
+#include "HelperThree.hpp"
 #include "blowfishOne.h"
 #include "blowfishTwo.h"
 #include "md5.hpp"
@@ -26,10 +26,10 @@
 #define MAXVALUE 11500
 #define bytesRead 1024
 
-typedef MyClass MyData;
-typedef PartTwo MyTwo;
-typedef PartTwoB MyTwoB;
-typedef blowfisher MyBlow;
+typedef HelperOne MyData;
+typedef HelperTwo MyTwo;
+typedef HelperFour MyTwoB;
+typedef HelperThree MyBlow;
 
 using namespace std;
 
@@ -280,7 +280,7 @@ int main (int argc, char *argv[]) {
 			
 			{
 			cereal::JSONInputArchive iarchive(vb);	
-			MyClass mydata5;
+			HelperOne mydata5;
 			iarchive(mydata5);
 			fnonce5=mydata5.fnoncer;
 			} 

@@ -1,7 +1,7 @@
-#ifndef MYCLASS_HPP
-#define MYCLASS_HPP
+#ifndef HELPERONE_HPP
+#define HELPERONE_HPP
 
-struct MyClass
+struct HelperOne
 {
   int nonceOne;
   std::string request;

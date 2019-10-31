@@ -1,7 +1,7 @@
-#ifndef PARTTWO_HPP
-#define PARTTWO_HPP
+#ifndef HELPERTWO_HPP
+#define HELPERTWO_HPP
 
-struct PartTwo
+struct HelperTwo
 {
   int nonceOne;
   std::string request;

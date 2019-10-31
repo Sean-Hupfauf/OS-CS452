@@ -1,10 +1,11 @@
-#ifndef PARTTWOB_HPP
-#define PARTTWOB_HPP
+#ifndef HELPERFOUR_HPP
+#define HELPERFOUR_HPP
 
-struct PartTwoB
+struct HelperFour
 {
   std::string IDa;
   std::string sessionKey;
+  //std::string encryptedString;
   
   template<class Archive>
   void serialize(Archive & archive) {

@@ -11,10 +11,10 @@
 #include <bitset>
 #include <math.h>
 #include <sstream>
-#include "MyClass.hpp"
-#include "PartTwo.hpp"
-#include "PartTwoB.hpp"
-#include "blowfisher.hpp"
+#include "HelperOne.hpp"
+#include "HelperTwo.hpp"
+#include "HelperFour.hpp"
+#include "HelperThree.hpp"
 #include "blowfishOne.h"
 #include "blowfishTwo.h"
 #include "cereal/archives/binary.hpp"
@@ -23,10 +23,10 @@
 #define PORT 9557
 #define MAXVALUE 11500
 
-typedef MyClass MyData;
-typedef PartTwo MyTwo;
-typedef PartTwoB MyTwoB;
-typedef blowfisher MyBlow;
+typedef HelperOne MyData;
+typedef HelperTwo MyTwo;
+typedef HelperFour MyTwoB;
+typedef HelperThree MyBlow;
 
 using namespace std;
 

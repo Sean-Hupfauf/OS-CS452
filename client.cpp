@@ -12,11 +12,11 @@
 #include <math.h>
 #include "blowfishOne.h"
 #include "blowfishTwo.h"
-#include "blowfisher.hpp"
+#include "HelperThree.hpp"
 #include <sstream>
-#include "MyClass.hpp"
-#include "PartTwo.hpp"
-#include "PartTwoB.hpp"
+#include "HelperOne.hpp"
+#include "HelperTwo.hpp"
+#include "HelperFour.hpp"
 #include "md5.hpp"
 #include "secureConnection.hpp"
 #include "cereal/archives/binary.hpp"
@@ -26,10 +26,10 @@
 #define MAXVALUE 11500
 #define bytesRead 1024
 
-typedef MyClass MyData;
-typedef PartTwo MyTwo;
-typedef blowfisher MyBlow;
-typedef PartTwoB MyTwoB;
+typedef HelperOne MyData;
+typedef HelperTwo MyTwo;
+typedef HelperThree MyBlow;
+typedef HelperFour MyTwoB;
 
 using namespace std;
 
@@ -263,7 +263,7 @@ int main(int argc, char*argv[]) {
 
 	{
 	cereal::JSONInputArchive iarchive(qw);	
-	MyClass mydata2;
+	HelperOne mydata2;
 	iarchive(mydata2);
 	noncetwo=mydata2.nonceOne;
 	} 
@@ -391,7 +391,7 @@ int main(int argc, char*argv[]) {
 		
 		{
 		cereal::JSONOutputArchive oarchive(encryptedHexReturnToB);
-		blowfisher blow;
+		HelperThree blow;
 		blow.encryptedString = encryptedHex;	
 		
 		oarchive(blow);

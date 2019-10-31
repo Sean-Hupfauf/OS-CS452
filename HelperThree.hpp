@@ -1,7 +1,7 @@
-#ifndef BLOWFISHER_HPP
-#define BLOWFISHER_HPP
+#ifndef HELPERTHREE_HPP
+#define HELPERTHREE_HPP
 
-struct blowfisher
+struct HelperThree
 {
   //PartTwo 
   std::string encryptedString;
