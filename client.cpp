@@ -41,29 +41,6 @@ void error(const char *msg) {
 	exit(0);
 }
 
-//-----------------------------------------------------
-/*
-int randomNumber() {
-	
-    int iSecret;
-
-    /* initialize random seed: */
-    // srand (time(NULL));
-
-    // /* generate secret number between 1 and 10: */
-    // iSecret = rand() % 10 + 1;
-    
-	// return iSecret;
-// }
-
-
-//-----------------------------------------------------
-
-/* long f(long nonce) {
-    
-} */
-
-//-----------------------------------------------------
 
 int main(int argc, char*argv[]) {
 	
@@ -138,7 +115,7 @@ int main(int argc, char*argv[]) {
 		std::cout << endl;
 		
 		const char* input = ss.str().c_str();
-		//size_t t = sizeof(input);
+		
 		write(sockfd, input, 255);
 	
 	
@@ -205,12 +182,7 @@ int main(int argc, char*argv[]) {
 	int sockfb, m;
 	struct sockaddr_in serv_addr2;
 	struct hostent *server2;
-/* 
-	if (argc < 2) {
-		fprintf(stderr, "usage is %s hostname\n", argv[0]);
-		exit(0);
-	}
-*/
+
 	
 	sockfb = socket(AF_INET, SOCK_STREAM, 0);
 	if (sockfb < 0) error("ERROR opening socket");
@@ -254,8 +226,7 @@ int main(int argc, char*argv[]) {
 		
 		
 		std::string nextx = rs.str();
-		//std::cout << nextx << std::endl;
-		//size_t t = sizeof(nextx);
+		
 		write(sockfb, nextx.c_str(), 1000);   // to server2
 	
 	
@@ -297,10 +268,7 @@ int main(int argc, char*argv[]) {
 	noncetwo=mydata2.nonceOne;
 	} 
 	
-	
-	
 
-	
 	//---------------------------------------------------------====
 	//long fnonce = f(noncetwo);
 	

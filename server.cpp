@@ -230,10 +230,7 @@ char buffer[256];
 		write(newsockfd, nextx.c_str(), 1000);
 		
 	//-----------------------------------------------------
-	
-	
-	
-	
+		
 	
 	close(newsockfd);
 	close(sockfd);

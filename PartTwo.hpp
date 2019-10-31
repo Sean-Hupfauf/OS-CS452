@@ -7,7 +7,6 @@ struct PartTwo
   std::string request;
   std::string sessionKey;
   std::string encryptedString;
-  //std::string encryptedString;
   
   template<class Archive>
   void serialize(Archive & archive) {

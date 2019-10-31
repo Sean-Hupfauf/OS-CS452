@@ -143,11 +143,6 @@ int main (int argc, char *argv[]) {
 	}
 	
 
-	
-			/* //char buffer[256];
-			n = read(newsockfb,buffer,255);
-			if (n < 0) error("ERROR reading from socket");
-			printf("Here is the message: %s\n",buffer); */
 			
 			std::string keyers;
 			BLOWFISHONE bf(bKey); //b key
@@ -159,7 +154,7 @@ int main (int argc, char *argv[]) {
 			read(newsockfb, buf, 1000);
 			
 			string str(buf);
-			//std::cout << str << std::endl;
+			
 			sr << str;
 			
 			{
@@ -168,7 +163,6 @@ int main (int argc, char *argv[]) {
 			iarchive(myblow);
 			keyers=myblow.encryptedString;
 			} 
-			
 			
 			
 			//-----------------------------------------------------
@@ -271,7 +265,6 @@ int main (int argc, char *argv[]) {
 			iarchive(myblow5);
 			newkey=myblow5.encryptedString;
 			option=myblow5.choice;
-			//std::cout << newkey << std::endl;
 			} 
 			
 			//-----------------------------------------------------
@@ -284,7 +277,7 @@ int main (int argc, char *argv[]) {
 			
 			std::stringstream vb;
 			vb << varNew;
-			//std::cout << varNew << std::endl;
+			
 			{
 			cereal::JSONInputArchive iarchive(vb);	
 			MyClass mydata5;
